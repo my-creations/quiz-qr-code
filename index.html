@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz com Votação - Painel Principal</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ESPECIAIS DE OURO</h1>
+            <button class="fullscreen-button" id="fullscreenButton" title="Entrar em modo fullscreen">
+                Fullscreen
+            </button>
+        </div>
+
+        <!-- Layout: Descrição à esquerda, QR à direita -->
+        <div class="content-layout">
+            <div class="left-section">
+                <div class="award-description">
+                    <h2 class="question-text" id="questionText"></h2>
+                    <div class="description-content" id="awardDescription"></div>
+                </div>
+            </div>
+            
+            <div class="right-section">
+                <div id="qrSection" class="qr-section">
+                    <div id="qrcode"></div>
+                    <div class="vote-url" id="voteUrl"></div>
+                </div>
+                
+                <div id="timerSection" class="timer-section">
+                    <div class="timer-label">Tempo Restante</div>
+                    <div class="timer-display" id="timerDisplay">1:00</div>
+                </div>
+                
+                <!-- Controles de Navegação -->
+                <div class="navigation-controls">
+                    <button class="nav-button" id="prevButton">
+                        ← Anterior
+                    </button>
+                    <button class="nav-button primary" id="pauseButton">
+                        Pausar
+                    </button>
+                    <button class="nav-button" id="nextButton">
+                        Próxima →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultados em Tempo Real -->
+        <div id="resultsSection" class="options-section">
+            <div id="optionsContainer"></div>
+        </div>
+
+        <!-- Página de Resultados Finais -->
+        <div id="finalResultsSection" class="results-section hidden">
+            <div class="winner-announcement">
+                <h2>🏆 Vencedor!</h2>
+                <div class="winner-option" id="winnerOption"></div>
+                <div class="winner-stats">
+                    <div><span id="winnerVotes"></span> votos (<span id="winnerPercentage"></span>%)</div>
+                </div>
+            </div>
+            
+            <h3 style="margin-bottom: 20px; color: #333;">Resultados Completos</h3>
+            <div id="finalOptionsContainer"></div>
+            
+            <button class="continue-button" id="continueButton">
+                Continuar para Próxima Pergunta →
+            </button>
+        </div>
+    </div>
+
+    <!-- Bibliotecas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    
+    <!-- Scripts -->
+    <script src="js/questions.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
