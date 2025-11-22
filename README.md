@@ -1,171 +1,171 @@
-# 🎯 Quiz com Votação em Tempo Real
+# 🎯 Real-Time Voting Quiz
 
-Sistema de votação interativo com QR Code, temporizador e resultados em tempo real. Totalmente gratuito e hospedável no GitHub Pages!
+Interactive voting system with QR Code, timer, and real-time results. Completely free and hostable on GitHub Pages!
 
-## ✨ Funcionalidades
+## ✨ Features
 
-- ✅ Geração automática de QR Code para votação
-- ✅ Temporizador configurável por pergunta (padrão: 1 minuto)
-- ✅ Controles de navegação (anterior/próxima pergunta)
-- ✅ Pausa/retomar temporizador
-- ✅ Modo fullscreen para apresentações
-- ✅ Resultados em tempo real com gráficos
-- ✅ Página de resultados com opção vencedora
-- ✅ Suporte para imagens nas opções
-- ✅ Múltiplas perguntas configuráveis
-- ✅ Design responsivo e moderno
-- ✅ 100% gratuito (sem backend necessário)
+- ✅ Automatic QR Code generation for voting
+- ✅ Configurable timer per question (default: 1 minute)
+- ✅ Navigation controls (previous/next question)
+- ✅ Pause/resume timer
+- ✅ Fullscreen mode for presentations
+- ✅ Real-time results with graphics
+- ✅ Results page with winning option
+- ✅ Support for images in options
+- ✅ Multiple configurable questions
+- ✅ Responsive and modern design
+- ✅ 100% free (no backend required)
 
-## 📁 Estrutura do Projeto
+## 📁 Project Structure
 
 ```
 quiz-qr-code/
-├── index.html              # Painel principal (exibir resultados)
-├── vote.html               # Página de votação
+├── index.html              # Main panel (display results)
+├── vote.html               # Voting page
 ├── css/
-│   └── styles.css          # Estilos da aplicação
+│   └── styles.css          # Application styles
 ├── js/
-│   ├── questions.js        # Configuração das perguntas
-│   ├── app.js              # Lógica do painel principal
-│   └── vote.js             # Lógica da página de votação
-├── images/                 # Imagens para as opções
+│   ├── questions.js        # Questions configuration
+│   ├── app.js              # Main panel logic
+│   └── vote.js             # Voting page logic
+├── images/                 # Images for options
 │   ├── IMG_4039.jpeg
 │   ├── IMG_4045.jpeg
 │   ├── IMG_4135.jpeg
 │   └── IMG_4136.jpeg
 ├── docs/
-│   ├── README.md           # Documentação detalhada
-│   └── PLANO.md            # Plano de desenvolvimento
+│   ├── README.md           # Detailed documentation
+│   └── PLANO.md            # Development plan
 └── .gitignore
 ```
 
-## 🚀 Como Usar
+## 🚀 How to Use
 
-### Localmente
+### Locally
 
-1. Clone ou baixe este repositório
-2. Abra `index.html` num navegador (painel de controle)
-3. Abra `vote.html` noutra aba ou dispositivo (página de votação)
-4. Ou escaneie o QR Code gerado para votar no telemóvel
+1. Clone or download this repository
+2. Open `index.html` in a browser (control panel)
+3. Open `vote.html` in another tab or device (voting page)
+4. Or scan the generated QR Code to vote on mobile
 
-### No GitHub Pages
+### On GitHub Pages
 
-1. Crie um repositório no GitHub
-2. Faça upload de todos os arquivos
-3. Vá em Settings > Pages
-4. Selecione a branch `main` e pasta `/root`
-5. Aguarde alguns minutos
-6. Acesse: `https://seu-usuario.github.io/nome-do-repo/`
+1. Create a repository on GitHub
+2. Upload all files
+3. Go to Settings > Pages
+4. Select the `main` branch and `/root` folder
+5. Wait a few minutes
+6. Access: `https://your-username.github.io/repo-name/`
 
-## ⚙️ Configuração das Perguntas
+## ⚙️ Questions Configuration
 
-Edite o arquivo `js/questions.js` para adicionar/modificar perguntas:
+Edit the `js/questions.js` file to add/modify questions:
 
 ```javascript
 const questions = [
     {
         id: 1,
-        question: "Sua pergunta aqui?",
-        description: "Descrição opcional da pergunta",
+        question: "Your question here?",
+        description: "Optional question description",
         options: [
-            { text: "Opção 1", image: "images/foto1.jpg" },
-            { text: "Opção 2", image: "images/foto2.jpg" },
-            // até 5 opções
+            { text: "Option 1", image: "images/photo1.jpg" },
+            { text: "Option 2", image: "images/photo2.jpg" },
+            // up to 5 options
         ],
-        duration: 60000 // 1 minuto em milissegundos
+        duration: 60000 // 1 minute in milliseconds
     },
-    // Adicione mais perguntas...
+    // Add more questions...
 ];
 ```
 
-### Formato das Opções
+### Options Format
 
-**Com imagem:**
+**With image:**
 ```javascript
-{ text: "Nome", image: "images/foto.jpg" }
+{ text: "Name", image: "images/photo.jpg" }
 ```
 
-**Sem imagem (texto simples):**
+**Without image (simple text):**
 ```javascript
-"Nome da Opção"
+"Option Name"
 ```
 
-**Com imagem de URL externa:**
+**With external URL image:**
 ```javascript
-{ text: "Nome", image: "https://exemplo.com/imagem.png" }
+{ text: "Name", image: "https://example.com/image.png" }
 ```
 
-## 🎮 Controles do Painel
+## 🎮 Panel Controls
 
-- **⏸️ Pausar/Retomar** - Controla o temporizador
-- **← Anterior** - Volta para pergunta anterior
-- **→ Próxima** - Avança para próxima pergunta
-- **🖥️ Fullscreen** - Ativa modo tela cheia (ideal para apresentações)
+- **⏸️ Pause/Resume** - Controls the timer
+- **← Previous** - Go back to previous question
+- **→ Next** - Advance to next question
+- **🖥️ Fullscreen** - Activate fullscreen mode (ideal for presentations)
 
-## 🎨 Adicionando Imagens
+## 🎨 Adding Images
 
-1. Coloque suas imagens na pasta `images/`
-2. Formatos suportados: JPG, PNG, SVG, GIF
-3. Recomendado: imagens quadradas (ratio 1:1)
-4. Tamanho sugerido: 200x200px a 500x500px
+1. Place your images in the `images/` folder
+2. Supported formats: JPG, PNG, SVG, GIF
+3. Recommended: square images (1:1 ratio)
+4. Suggested size: 200x200px to 500x500px
 
-## 💾 Como Funciona o Armazenamento
+## 💾 How Storage Works
 
-Os votos são armazenados no **LocalStorage** do navegador:
-- Funciona perfeitamente para demos e apresentações
-- Sincronização automática entre abas do mesmo navegador
-- Cada dispositivo pode votar uma vez por pergunta
-- Para resetar: limpar LocalStorage ou reiniciar quiz
+Votes are stored in the browser's **LocalStorage**:
+- Works perfectly for demos and presentations
+- Automatic synchronization between tabs of the same browser
+- Each device can vote once per question
+- To reset: clear LocalStorage or restart quiz
 
-**Limitação:** Votos são locais ao navegador/dispositivo. Para uso em produção com múltiplos dispositivos, considere integrar Firebase Realtime Database (gratuito).
+**Limitation:** Votes are local to the browser/device. For production use with multiple devices, consider integrating Firebase Realtime Database (free).
 
-## 🌐 Compatibilidade
+## 🌐 Compatibility
 
-- ✅ Chrome/Edge (recomendado)
+- ✅ Chrome/Edge (recommended)
 - ✅ Firefox
 - ✅ Safari
 - ✅ Mobile (iOS/Android)
 
-## 📱 Uso em Eventos
+## 📱 Event Usage
 
-### Cenário Ideal
-1. Projetor/TV mostra `index.html` (painel principal)
-2. Audiência escaneia QR Code
-3. Vota no telemóvel via `vote.html`
-4. Resultados aparecem em tempo real no projetor
+### Ideal Scenario
+1. Projector/TV shows `index.html` (main panel)
+2. Audience scans QR Code
+3. Votes on mobile via `vote.html`
+4. Results appear in real-time on projector
 
-## 🎨 Personalização
+## 🎨 Customization
 
-### Mudar Cores
-Edite `css/styles.css`:
+### Change Colors
+Edit `css/styles.css`:
 ```css
 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 ```
 
-### Ajustar Temporizador
-Edite `js/questions.js`:
+### Adjust Timer
+Edit `js/questions.js`:
 ```javascript
-duration: 120000 // 2 minutos
+duration: 120000 // 2 minutes
 ```
 
-### Tamanho das Imagens
-Edite `css/styles.css`:
+### Image Sizes
+Edit `css/styles.css`:
 ```css
 .option-image {
-    width: 60px;  /* ajuste conforme necessário */
+    width: 60px;  /* adjust as needed */
     height: 60px;
 }
 ```
 
-## 🔧 Melhorias Futuras Possíveis
+## 🔧 Possible Future Improvements
 
-- [ ] Integração com Firebase Realtime Database
-- [ ] Sistema de autenticação por código único
-- [ ] Exportar resultados para CSV/PDF
-- [ ] Gráficos animados com Chart.js
-- [ ] Sons de notificação
-- [ ] Modo escuro
-- [ ] Análise de resultados históricos
+- [ ] Firebase Realtime Database integration
+- [ ] Authentication system with unique code
+- [ ] Export results to CSV/PDF
+- [ ] Animated charts with Chart.js
+- [ ] Notification sounds
+- [ ] Dark mode
+- [ ] Historical results analysis
 
 ## 📄 Licença
 

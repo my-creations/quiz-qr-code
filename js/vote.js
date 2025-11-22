@@ -1,5 +1,3 @@
-// Página de Votação
-
 class VotePage {
     constructor() {
         this.selectedOption = null;
@@ -10,19 +8,11 @@ class VotePage {
     }
 
     init() {
-        // Carregar estado do quiz
         this.loadQuizState();
-        
-        // Renderizar pergunta
         this.renderQuestion();
-        
-        // Verificar se já votou
         this.checkIfVoted();
-        
-        // Iniciar timer
         this.startTimer();
         
-        // Event listeners
         document.getElementById('submitVoteButton').addEventListener('click', () => this.submitVote());
     }
 
@@ -55,7 +45,6 @@ class VotePage {
         
         document.getElementById('voteQuestionText').textContent = question.question;
         
-        // Renderizar opções
         const container = document.getElementById('voteOptionsSection');
         container.innerHTML = '';
         
@@ -92,18 +81,15 @@ class VotePage {
             return;
         }
         
-        // Remover seleção anterior
         document.querySelectorAll('.vote-option').forEach(el => {
             el.classList.remove('selected');
         });
         
-        // Selecionar nova opção
         const optionElement = document.querySelector(`[data-option="${option}"]`);
         optionElement.classList.add('selected');
         
         this.selectedOption = option;
         
-        // Habilitar botão de votar
         document.getElementById('submitVoteButton').disabled = false;
     }
 
@@ -114,7 +100,7 @@ class VotePage {
         
         if (hasVoted) {
             this.hasVoted = true;
-            this.showMessage('Já votaste neste prémio!', 'info');
+            this.showMessage('You have already voted in this award!', 'info');
             this.disableVoting();
         }
     }
@@ -126,11 +112,9 @@ class VotePage {
         
         const question = this.getCurrentQuestion();
         
-        // Registrar voto
         const votesData = localStorage.getItem('quizVotes');
         let votes = votesData ? JSON.parse(votesData) : {};
         
-        // Inicializar votos se não existir
         if (!votes[question.id]) {
             votes[question.id] = {};
             question.options.forEach(option => {
@@ -139,26 +123,16 @@ class VotePage {
             });
         }
         
-        // Incrementar voto
         votes[question.id][this.selectedOption] = (votes[question.id][this.selectedOption] || 0) + 1;
-        
-        // Salvar votos
         localStorage.setItem('quizVotes', JSON.stringify(votes));
         
-        // Marcar que votou
         const voteKey = `voted_${question.id}`;
         localStorage.setItem(voteKey, 'true');
         
-        // Atualizar estado
         this.hasVoted = true;
-        
-        // Mostrar mensagem de sucesso
-        this.showMessage('✅ Voto registrado com sucesso!', 'success');
-        
-        // Desabilitar votação
+        this.showMessage('✅ Vote registered successfully!', 'success');
         this.disableVoting();
         
-        // Disparar evento para atualizar outras abas
         window.dispatchEvent(new StorageEvent('storage', {
             key: 'quizVotes',
             newValue: JSON.stringify(votes)
@@ -176,12 +150,9 @@ class VotePage {
     }
 
     startTimer() {
-        // Atualizar display imediatamente
         this.updateTimerDisplay();
 
-        // Iniciar contagem regressiva
         this.timer = setInterval(() => {
-            // Recarregar estado para sincronizar com o painel principal
             this.loadQuizState();
             
             if (this.timeRemaining <= 0) {
@@ -202,7 +173,6 @@ class VotePage {
         const timerElement = document.getElementById('voteTimerDisplay');
         timerElement.textContent = display;
         
-        // Mudar cor baseado no tempo
         timerElement.classList.remove('warning', 'danger');
         if (seconds <= 10) {
             timerElement.classList.add('danger');
@@ -212,13 +182,12 @@ class VotePage {
     }
 
     endVoting() {
-        // Parar timer
         if (this.timer) {
             clearInterval(this.timer);
         }
         
         if (!this.hasVoted) {
-            this.showMessage('⏰ Tempo esgotado! A votação foi encerrada.', 'error');
+            this.showMessage('⏰ Time expired! Voting has been closed.', 'error');
         }
         
         this.disableVoting();
@@ -232,7 +201,6 @@ class VotePage {
             </div>
         `;
         
-        // Auto-remover mensagem de sucesso após 5 segundos
         if (type === 'success') {
             setTimeout(() => {
                 container.innerHTML = '';
@@ -241,7 +209,6 @@ class VotePage {
     }
 }
 
-// Inicializar página de votação quando carregar
 document.addEventListener('DOMContentLoaded', () => {
     new VotePage();
 });
