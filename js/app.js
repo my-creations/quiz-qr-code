@@ -196,7 +196,9 @@ class QuizApp {
         const qrContainer = document.getElementById('qrcode');
         qrContainer.innerHTML = '';
         
-        const voteUrl = window.location.href.replace('index.html', 'vote.html').replace(/\/$/, '') + '/vote.html';
+        // Build vote URL properly for GitHub Pages
+        const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
+        const voteUrl = baseUrl + '/vote.html';
         
         this.qrCodeInstance = new QRCode(qrContainer, {
             text: voteUrl,
