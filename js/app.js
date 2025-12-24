@@ -148,6 +148,7 @@ class QuizApp {
         document.getElementById('awardDescription').textContent = question.description || '';
         
         document.getElementById('qrSection').classList.remove('hidden');
+        document.getElementById('winnerSection').classList.add('hidden');
         document.getElementById('resultsSection').classList.remove('hidden');
         document.getElementById('finalResultsSection').classList.add('hidden');
         
@@ -353,9 +354,9 @@ class QuizApp {
             container.appendChild(optionDiv);
         });
         
-        // Hide navigation controls and QR section when showing results
-        document.querySelector('.navigation-controls').classList.add('hidden');
+        // Hide QR section and show winner section in its place
         document.getElementById('qrSection').classList.add('hidden');
+        document.getElementById('winnerSection').classList.remove('hidden');
         document.getElementById('resultsSection').classList.add('hidden');
         document.getElementById('finalResultsSection').classList.remove('hidden');
         
