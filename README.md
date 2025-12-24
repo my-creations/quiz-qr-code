@@ -1,6 +1,6 @@
 # 🎯 Real-Time Voting Quiz
 
-Interactive voting system with QR Code, timer, and real-time results. Completely free and hostable on GitHub Pages!
+Interactive voting system with QR Code, timer, and real-time results. Hostable on GitHub Pages with Firebase for real-time vote synchronization!
 
 ## ✨ Features
 
@@ -14,7 +14,7 @@ Interactive voting system with QR Code, timer, and real-time results. Completely
 - ✅ Support for images in options
 - ✅ Multiple configurable questions
 - ✅ Responsive and modern design
-- ✅ 100% free (no backend required)
+- ✅ **Real-time vote sync across devices via Firebase**
 
 ## 📁 Project Structure
 
@@ -26,6 +26,7 @@ quiz-qr-code/
 │   └── styles.css          # Application styles
 ├── js/
 │   ├── questions.js        # Questions configuration
+│   ├── firebase-config.js  # Firebase configuration
 │   ├── app.js              # Main panel logic
 │   └── vote.js             # Voting page logic
 ├── images/                 # Images for options
@@ -39,14 +40,69 @@ quiz-qr-code/
 └── .gitignore
 ```
 
+## 🔥 Firebase Setup (Required for GitHub Pages)
+
+To enable real-time voting across devices, you need to set up a free Firebase project:
+
+### Step 1: Create a Firebase Project
+
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Click "Add project" and follow the steps
+3. Give your project a name (e.g., "quiz-voting")
+
+### Step 2: Create a Realtime Database
+
+1. In your Firebase project, go to "Build" → "Realtime Database"
+2. Click "Create Database"
+3. Choose a location close to your users
+4. Start in **Test Mode** (for development) or set up security rules
+
+### Step 3: Get Your Configuration
+
+1. Go to Project Settings (gear icon) → "General"
+2. Scroll down to "Your apps" and click the web icon (`</>`)
+3. Register your app with a nickname
+4. Copy the `firebaseConfig` object
+
+### Step 4: Update firebase-config.js
+
+Open `js/firebase-config.js` and replace the placeholder values:
+
+```javascript
+const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "your-project.firebaseapp.com",
+    databaseURL: "https://your-project-default-rtdb.firebaseio.com",
+    projectId: "your-project",
+    storageBucket: "your-project.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "your-app-id"
+};
+```
+
+### Step 5: Set Database Rules (Important!)
+
+In Firebase Console → Realtime Database → Rules, set:
+
+```json
+{
+  "rules": {
+    ".read": true,
+    ".write": true
+  }
+}
+```
+
+> ⚠️ **Note:** These rules allow anyone to read/write. For production, consider adding authentication or more restrictive rules.
+
 ## 🚀 How to Use
 
 ### Locally
 
 1. Clone or download this repository
-2. Open `index.html` in a browser (control panel)
-3. Open `vote.html` in another tab or device (voting page)
-4. Or scan the generated QR Code to vote on mobile
+2. Configure Firebase (see above)
+3. Open `index.html` in a browser (control panel)
+4. Scan the QR Code or open `vote.html` on other devices to vote
 
 ### On GitHub Pages
 

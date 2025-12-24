@@ -6,16 +6,17 @@ class QuizApp {
         this.qrCodeInstance = null;
         this.isPaused = false;
         this.lastUpdateTime = Date.now();
+        this.votes = {};
         
         this.init();
     }
 
-    init() {
-        this.loadState();
+    async init() {
+        await this.loadState();
         this.renderQuestion();
         this.generateQRCode();
         this.startTimer();
-        this.startVotePolling();
+        this.setupFirebaseListeners();
         
 
         document.getElementById('continueButton').addEventListener('click', () => this.nextQuestion());
@@ -24,18 +25,20 @@ class QuizApp {
         document.getElementById('nextButton').addEventListener('click', () => this.skipToNextQuestion());
         document.getElementById('fullscreenButton').addEventListener('click', () => this.toggleFullscreen());
         
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'quizVotes') {
-                this.updateResults();
-            }
-        });
-        
         document.addEventListener('fullscreenchange', () => this.updateFullscreenButton());
         document.addEventListener('webkitfullscreenchange', () => this.updateFullscreenButton());
         document.addEventListener('mozfullscreenchange', () => this.updateFullscreenButton());
         document.addEventListener('MSFullscreenChange', () => this.updateFullscreenButton());
         
         this.updateNavigationButtons();
+    }
+
+    setupFirebaseListeners() {
+        // Listen for real-time vote updates from Firebase
+        FirebaseVotes.onAllVotesChange((votes) => {
+            this.votes = votes;
+            this.updateResults();
+        });
     }
 
     toggleFullscreen() {
@@ -96,6 +99,9 @@ class QuizApp {
             isPaused: this.isPaused
         };
         localStorage.setItem('quizState', JSON.stringify(state));
+        
+        // Also save to Firebase for vote page sync
+        FirebaseVotes.saveQuizState(state);
     }
 
     togglePause() {
@@ -156,8 +162,9 @@ class QuizApp {
     resetQuiz() {
         this.currentQuestionIndex = 0;
         this.timeRemaining = questions[0].duration;
-        localStorage.removeItem('quizVotes');
         localStorage.removeItem('quizState');
+        // Reset Firebase votes
+        FirebaseVotes.resetAllVotes();
         this.saveState();
     }
 
@@ -175,6 +182,9 @@ class QuizApp {
         document.getElementById('qrSection').classList.remove('hidden');
         document.getElementById('resultsSection').classList.remove('hidden');
         document.getElementById('finalResultsSection').classList.add('hidden');
+        
+        // Initialize votes for this question in Firebase
+        FirebaseVotes.initializeQuestionVotes(question.id, question.options);
         
         this.updateResults();
         
@@ -247,44 +257,28 @@ class QuizApp {
         
     }
 
-    startVotePolling() {
-        setInterval(() => {
-            this.updateResults();
-        }, 500);
-    }
+    // Votes are now handled by Firebase real-time listeners
+    // No need for polling anymore
 
     getVotes() {
-        const votesData = localStorage.getItem('quizVotes');
-        if (!votesData) {
-            return this.initializeVotes();
-        }
-        
-        const votes = JSON.parse(votesData);
         const question = this.getCurrentQuestion();
         
-        if (!votes[question.id]) {
-            votes[question.id] = {};
+        // Return votes from Firebase (cached in this.votes)
+        if (!this.votes[question.id]) {
+            const initialVotes = {};
             question.options.forEach(option => {
                 const optionText = this.getOptionText(option);
-                votes[question.id][optionText] = 0;
+                initialVotes[optionText] = 0;
             });
-            localStorage.setItem('quizVotes', JSON.stringify(votes));
+            return { [question.id]: initialVotes };
         }
         
-        return votes;
+        return this.votes;
     }
 
     initializeVotes() {
-        const votes = {};
-        questions.forEach(question => {
-            votes[question.id] = {};
-            question.options.forEach(option => {
-                const optionText = typeof option === 'string' ? option : option.text;
-                votes[question.id][optionText] = 0;
-            });
-        });
-        localStorage.setItem('quizVotes', JSON.stringify(votes));
-        return votes;
+        // This is now handled by Firebase
+        return {};
     }
 
     getOptionText(option) {

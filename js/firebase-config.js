@@ -1,0 +1,146 @@
+// Firebase Configuration
+// Values are injected by GitHub Actions from repository secrets
+// For local development, create firebase-config.local.js with real values
+
+const firebaseConfig = {
+    apiKey: "FIREBASE_API_KEY",
+    authDomain: "FIREBASE_AUTH_DOMAIN",
+    databaseURL: "FIREBASE_DATABASE_URL",
+    projectId: "FIREBASE_PROJECT_ID",
+    storageBucket: "FIREBASE_STORAGE_BUCKET",
+    messagingSenderId: "FIREBASE_MESSAGING_SENDER_ID",
+    appId: "FIREBASE_APP_ID"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
+
+// Database helper functions
+const FirebaseVotes = {
+    // Reference to votes in the database
+    getVotesRef() {
+        return database.ref('votes');
+    },
+
+    getQuizStateRef() {
+        return database.ref('quizState');
+    },
+
+    // Save quiz state (current question, time remaining)
+    async saveQuizState(state) {
+        try {
+            await this.getQuizStateRef().set(state);
+        } catch (error) {
+            console.error('Error saving quiz state:', error);
+        }
+    },
+
+    // Get quiz state
+    async getQuizState() {
+        try {
+            const snapshot = await this.getQuizStateRef().once('value');
+            return snapshot.val();
+        } catch (error) {
+            console.error('Error getting quiz state:', error);
+            return null;
+        }
+    },
+
+    // Listen for quiz state changes
+    onQuizStateChange(callback) {
+        this.getQuizStateRef().on('value', (snapshot) => {
+            callback(snapshot.val());
+        });
+    },
+
+    // Submit a vote
+    async submitVote(questionId, option) {
+        try {
+            const voteRef = database.ref(`votes/${questionId}/${option}`);
+            await voteRef.transaction((currentValue) => {
+                return (currentValue || 0) + 1;
+            });
+            return true;
+        } catch (error) {
+            console.error('Error submitting vote:', error);
+            return false;
+        }
+    },
+
+    // Get all votes for a question
+    async getVotes(questionId) {
+        try {
+            const snapshot = await database.ref(`votes/${questionId}`).once('value');
+            return snapshot.val() || {};
+        } catch (error) {
+            console.error('Error getting votes:', error);
+            return {};
+        }
+    },
+
+    // Get all votes
+    async getAllVotes() {
+        try {
+            const snapshot = await this.getVotesRef().once('value');
+            return snapshot.val() || {};
+        } catch (error) {
+            console.error('Error getting all votes:', error);
+            return {};
+        }
+    },
+
+    // Listen for vote changes on a specific question
+    onVotesChange(questionId, callback) {
+        database.ref(`votes/${questionId}`).on('value', (snapshot) => {
+            callback(snapshot.val() || {});
+        });
+    },
+
+    // Listen for all vote changes
+    onAllVotesChange(callback) {
+        this.getVotesRef().on('value', (snapshot) => {
+            callback(snapshot.val() || {});
+        });
+    },
+
+    // Initialize votes for a question (if not exists)
+    async initializeQuestionVotes(questionId, options) {
+        try {
+            const snapshot = await database.ref(`votes/${questionId}`).once('value');
+            if (!snapshot.exists()) {
+                const initialVotes = {};
+                options.forEach(option => {
+                    const optionText = typeof option === 'string' ? option : option.text;
+                    initialVotes[optionText] = 0;
+                });
+                await database.ref(`votes/${questionId}`).set(initialVotes);
+            }
+        } catch (error) {
+            console.error('Error initializing votes:', error);
+        }
+    },
+
+    // Reset all votes (admin function)
+    async resetAllVotes() {
+        try {
+            await this.getVotesRef().remove();
+            console.log('All votes reset');
+        } catch (error) {
+            console.error('Error resetting votes:', error);
+        }
+    },
+
+    // Stop listening to changes
+    offVotesChange(questionId) {
+        if (questionId) {
+            database.ref(`votes/${questionId}`).off();
+        } else {
+            this.getVotesRef().off();
+        }
+    },
+
+    offQuizStateChange() {
+        this.getQuizStateRef().off();
+    }
+};

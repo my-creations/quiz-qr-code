@@ -1,0 +1,11 @@
+{
+  "name": "quiz-qr-code",
+  "version": "1.0.0",
+  "scripts": {
+    "setup": "node generate-config.js",
+    "dev": "node generate-config.js && echo '✅ Config ready! Open index.html in your browser'"
+  },
+  "dependencies": {
+    "firebase": "^12.7.0"
+  }
+}

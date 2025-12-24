@@ -3,28 +3,58 @@ class VotePage {
         this.selectedOption = null;
         this.hasVoted = false;
         this.timer = null;
+        this.currentQuestionIndex = 0;
+        this.timeRemaining = 0;
         
         this.init();
     }
 
-    init() {
-        this.loadQuizState();
+    async init() {
+        await this.loadQuizState();
         this.renderQuestion();
         this.checkIfVoted();
         this.startTimer();
+        this.setupFirebaseListeners();
         
         document.getElementById('submitVoteButton').addEventListener('click', () => this.submitVote());
     }
 
-    loadQuizState() {
-        const state = localStorage.getItem('quizState');
-        if (state) {
-            const parsed = JSON.parse(state);
-            this.currentQuestionIndex = parsed.currentQuestionIndex || 0;
-            this.timeRemaining = parsed.timeRemaining || questions[this.currentQuestionIndex].duration;
+    setupFirebaseListeners() {
+        // Listen for quiz state changes from the presenter
+        FirebaseVotes.onQuizStateChange((state) => {
+            if (state) {
+                const previousQuestionIndex = this.currentQuestionIndex;
+                this.currentQuestionIndex = state.currentQuestionIndex || 0;
+                this.timeRemaining = state.timeRemaining || questions[this.currentQuestionIndex].duration;
+                
+                // If question changed, re-render
+                if (previousQuestionIndex !== this.currentQuestionIndex) {
+                    this.hasVoted = false;
+                    this.selectedOption = null;
+                    this.renderQuestion();
+                    this.checkIfVoted();
+                }
+            }
+        });
+    }
+
+    async loadQuizState() {
+        // First try to get state from Firebase
+        const firebaseState = await FirebaseVotes.getQuizState();
+        if (firebaseState) {
+            this.currentQuestionIndex = firebaseState.currentQuestionIndex || 0;
+            this.timeRemaining = firebaseState.timeRemaining || questions[this.currentQuestionIndex].duration;
         } else {
-            this.currentQuestionIndex = 0;
-            this.timeRemaining = questions[0].duration;
+            // Fallback to localStorage
+            const state = localStorage.getItem('quizState');
+            if (state) {
+                const parsed = JSON.parse(state);
+                this.currentQuestionIndex = parsed.currentQuestionIndex || 0;
+                this.timeRemaining = parsed.timeRemaining || questions[this.currentQuestionIndex].duration;
+            } else {
+                this.currentQuestionIndex = 0;
+                this.timeRemaining = questions[0].duration;
+            }
         }
     }
 
@@ -105,38 +135,27 @@ class VotePage {
         }
     }
 
-    submitVote() {
+    async submitVote() {
         if (!this.selectedOption || this.hasVoted || this.timeRemaining <= 0) {
             return;
         }
         
         const question = this.getCurrentQuestion();
         
-        const votesData = localStorage.getItem('quizVotes');
-        let votes = votesData ? JSON.parse(votesData) : {};
+        // Submit vote to Firebase
+        const success = await FirebaseVotes.submitVote(question.id, this.selectedOption);
         
-        if (!votes[question.id]) {
-            votes[question.id] = {};
-            question.options.forEach(option => {
-                const optionText = this.getOptionText(option);
-                votes[question.id][optionText] = 0;
-            });
+        if (success) {
+            // Mark as voted in localStorage (to prevent duplicate votes on same device)
+            const voteKey = `voted_${question.id}`;
+            localStorage.setItem(voteKey, 'true');
+            
+            this.hasVoted = true;
+            this.showMessage('✅ Vote registered successfully!', 'success');
+            this.disableVoting();
+        } else {
+            this.showMessage('❌ Error submitting vote. Please try again.', 'error');
         }
-        
-        votes[question.id][this.selectedOption] = (votes[question.id][this.selectedOption] || 0) + 1;
-        localStorage.setItem('quizVotes', JSON.stringify(votes));
-        
-        const voteKey = `voted_${question.id}`;
-        localStorage.setItem(voteKey, 'true');
-        
-        this.hasVoted = true;
-        this.showMessage('✅ Vote registered successfully!', 'success');
-        this.disableVoting();
-        
-        window.dispatchEvent(new StorageEvent('storage', {
-            key: 'quizVotes',
-            newValue: JSON.stringify(votes)
-        }));
     }
 
     disableVoting() {
@@ -152,8 +171,12 @@ class VotePage {
     startTimer() {
         this.updateTimerDisplay();
 
-        this.timer = setInterval(() => {
-            this.loadQuizState();
+        this.timer = setInterval(async () => {
+            // Reload quiz state from Firebase to stay in sync
+            const firebaseState = await FirebaseVotes.getQuizState();
+            if (firebaseState) {
+                this.timeRemaining = firebaseState.timeRemaining || 0;
+            }
             
             if (this.timeRemaining <= 0) {
                 this.timeRemaining = 0;
@@ -161,7 +184,7 @@ class VotePage {
             }
 
             this.updateTimerDisplay();
-        }, 100);
+        }, 500);
     }
 
     updateTimerDisplay() {

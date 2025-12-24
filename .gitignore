@@ -16,3 +16,20 @@ npm-debug.log*
 # Arquivos temporários
 *.tmp
 *.temp
+# Node modules
+node_modules/
+
+# Package lock (opcional - remover se quiser manter)
+package-lock.json
+
+# Firebase local config (se usar variáveis de ambiente)
+js/firebase-config.local.js
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Build outputs
+dist/
+build/
