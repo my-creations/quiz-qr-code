@@ -3,22 +3,24 @@ class QuizApp {
         this.currentQuestionIndex = 0;
         this.qrCodeInstance = null;
         this.votes = {};
+        this.isShowingResults = false;
         
         this.init();
     }
 
     async init() {
         await this.loadState();
+        this.saveState(); // Ensure state is saved to Firebase on init
         this.renderQuestion();
         this.generateQRCode();
         this.setupFirebaseListeners();
         
 
-        document.getElementById('continueButton').addEventListener('click', () => this.nextQuestion());
-        document.getElementById('finishButton').addEventListener('click', () => this.finishVoting());
+        document.getElementById('finishButton').addEventListener('click', () => this.handleFinishButton());
         document.getElementById('prevButton').addEventListener('click', () => this.previousQuestion());
         document.getElementById('nextButton').addEventListener('click', () => this.skipToNextQuestion());
         document.getElementById('fullscreenButton').addEventListener('click', () => this.toggleFullscreen());
+        document.getElementById('resetButton').addEventListener('click', () => this.confirmReset());
         
         document.addEventListener('fullscreenchange', () => this.updateFullscreenButton());
         document.addEventListener('webkitfullscreenchange', () => this.updateFullscreenButton());
@@ -95,8 +97,31 @@ class QuizApp {
         FirebaseVotes.saveQuizState(state);
     }
 
-    finishVoting() {
-        this.showFinalResults();
+    handleFinishButton() {
+        if (this.isShowingResults) {
+            // Already showing results, go to next question
+            this.nextQuestion();
+        } else {
+            // Show results
+            this.showFinalResults();
+        }
+    }
+
+    updateFinishButton() {
+        const finishButton = document.getElementById('finishButton');
+        if (this.isShowingResults) {
+            if (this.currentQuestionIndex >= questions.length - 1) {
+                finishButton.innerHTML = '🔄 Recomeçar';
+            } else {
+                finishButton.innerHTML = 'Continuar ➡️';
+            }
+            finishButton.classList.remove('finish-button');
+            finishButton.classList.add('continue-mode');
+        } else {
+            finishButton.innerHTML = '🏆 Concluir';
+            finishButton.classList.add('finish-button');
+            finishButton.classList.remove('continue-mode');
+        }
     }
 
     updateNavigationButtons() {
@@ -137,6 +162,34 @@ class QuizApp {
         this.saveState();
     }
 
+    confirmReset() {
+        if (confirm('⚠️ Tens a certeza que queres fazer reset a TUDO?\n\nIsto vai:\n- Apagar todos os votos\n- Voltar à primeira pergunta\n- Permitir que todos votem novamente')) {
+            this.fullReset();
+        }
+    }
+
+    async fullReset() {
+        // Reset Firebase votes and state
+        await FirebaseVotes.resetAllVotes();
+        
+        // Clear all localStorage
+        localStorage.clear();
+        
+        // Reset local state
+        this.currentQuestionIndex = 0;
+        this.isShowingResults = false;
+        
+        // Save clean state to Firebase
+        this.saveState();
+        
+        // Re-render
+        this.renderQuestion();
+        this.generateQRCode();
+        this.updateNavigationButtons();
+        
+        alert('✅ Reset completo! Todos os votos foram apagados.');
+    }
+
     getCurrentQuestion() {
         return questions[this.currentQuestionIndex];
     }
@@ -154,6 +207,10 @@ class QuizApp {
         
         // Show navigation controls again
         document.querySelector('.navigation-controls').classList.remove('hidden');
+        
+        // Reset results state and update button
+        this.isShowingResults = false;
+        this.updateFinishButton();
         
         // Initialize votes for this question in Firebase
         FirebaseVotes.initializeQuestionVotes(question.id, question.options);
@@ -360,12 +417,9 @@ class QuizApp {
         document.getElementById('resultsSection').classList.add('hidden');
         document.getElementById('finalResultsSection').classList.remove('hidden');
         
-        const continueButton = document.getElementById('continueButton');
-        if (this.currentQuestionIndex >= questions.length - 1) {
-            continueButton.textContent = '🔄 Recomeçar o Quiz';
-        } else {
-            continueButton.textContent = 'Continuar para a Próxima Questão →';
-        }
+        // Update state and button
+        this.isShowingResults = true;
+        this.updateFinishButton();
     }
 
     nextQuestion() {

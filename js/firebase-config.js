@@ -1,8 +1,15 @@
 // Firebase Configuration
-// Values are injected by GitHub Actions from repository secrets
-// For local development, create firebase-config.local.js with real values
+// Automatically detects environment and uses appropriate config
+// - Production (GitHub Pages): Uses values injected by GitHub Actions
+// - Local development: Uses values from firebase-credentials.local.js (gitignored)
 
-const firebaseConfig = {
+// Check if we're in local development
+const isLocalDev = window.location.hostname === 'localhost' || 
+                   window.location.hostname === '127.0.0.1' ||
+                   window.location.protocol === 'file:';
+
+// Production config (values replaced by GitHub Actions)
+const productionConfig = {
     apiKey: "FIREBASE_API_KEY",
     authDomain: "FIREBASE_AUTH_DOMAIN",
     databaseURL: "FIREBASE_DATABASE_URL",
@@ -11,6 +18,21 @@ const firebaseConfig = {
     messagingSenderId: "FIREBASE_MESSAGING_SENDER_ID",
     appId: "FIREBASE_APP_ID"
 };
+
+// Select config based on environment
+// Local credentials should be defined in firebase-credentials.local.js (gitignored)
+let firebaseConfig;
+if (isLocalDev && typeof localFirebaseCredentials !== 'undefined') {
+    firebaseConfig = localFirebaseCredentials;
+    console.log('🔥 Firebase: Using LOCAL credentials');
+} else if (isLocalDev) {
+    console.error('❌ Firebase: Local credentials not found! Create js/firebase-credentials.local.js');
+    console.log('See js/firebase-credentials.template.js for the format');
+    firebaseConfig = productionConfig; // Will fail but shows the error
+} else {
+    firebaseConfig = productionConfig;
+    console.log('🔥 Firebase: Using PRODUCTION config');
+}
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -125,10 +147,33 @@ const FirebaseVotes = {
     async resetAllVotes() {
         try {
             await this.getVotesRef().remove();
-            console.log('All votes reset');
+            // Generate new session ID to invalidate all previous votes on all devices
+            const newSessionId = Date.now().toString();
+            await database.ref('sessionId').set(newSessionId);
+            console.log('All votes reset, new session:', newSessionId);
+            return newSessionId;
         } catch (error) {
             console.error('Error resetting votes:', error);
+            return null;
         }
+    },
+
+    // Get current session ID
+    async getSessionId() {
+        try {
+            const snapshot = await database.ref('sessionId').once('value');
+            return snapshot.val();
+        } catch (error) {
+            console.error('Error getting session ID:', error);
+            return null;
+        }
+    },
+
+    // Listen for session ID changes
+    onSessionIdChange(callback) {
+        database.ref('sessionId').on('value', (snapshot) => {
+            callback(snapshot.val());
+        });
     },
 
     // Stop listening to changes

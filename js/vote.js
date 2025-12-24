@@ -3,11 +3,13 @@ class VotePage {
         this.selectedOption = null;
         this.hasVoted = false;
         this.currentQuestionIndex = 0;
+        this.currentSessionId = null;
         
         this.init();
     }
 
     async init() {
+        await this.checkSession();
         await this.loadQuizState();
         this.renderQuestion();
         this.checkIfVoted();
@@ -16,12 +18,55 @@ class VotePage {
         document.getElementById('submitVoteButton').addEventListener('click', () => this.submitVote());
     }
 
+    async checkSession() {
+        // Get session ID from Firebase
+        const firebaseSessionId = await FirebaseVotes.getSessionId();
+        const localSessionId = localStorage.getItem('voteSessionId');
+        
+        if (firebaseSessionId && firebaseSessionId !== localSessionId) {
+            // Session changed - clear all local vote history
+            console.log('New session detected, clearing local vote history');
+            this.clearLocalVoteHistory();
+            localStorage.setItem('voteSessionId', firebaseSessionId);
+        }
+        
+        this.currentSessionId = firebaseSessionId;
+    }
+
+    clearLocalVoteHistory() {
+        // Clear all voted_* keys from localStorage
+        const keysToRemove = [];
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && key.startsWith('voted_')) {
+                keysToRemove.push(key);
+            }
+        }
+        keysToRemove.forEach(key => localStorage.removeItem(key));
+        console.log('Cleared', keysToRemove.length, 'vote records');
+    }
+
     setupFirebaseListeners() {
+        // Listen for session ID changes (reset detection)
+        FirebaseVotes.onSessionIdChange((sessionId) => {
+            if (sessionId && sessionId !== this.currentSessionId) {
+                console.log('Session reset detected!');
+                this.currentSessionId = sessionId;
+                localStorage.setItem('voteSessionId', sessionId);
+                this.clearLocalVoteHistory();
+                this.hasVoted = false;
+                this.selectedOption = null;
+                this.renderQuestion();
+                this.enableVoting();
+                this.showMessage('🔄 Nova sessão! Podes votar novamente.', 'info');
+            }
+        });
+        
         // Listen for quiz state changes from the presenter
         FirebaseVotes.onQuizStateChange((state) => {
-            if (state) {
+            if (state && typeof state.currentQuestionIndex === 'number') {
                 const previousQuestionIndex = this.currentQuestionIndex;
-                this.currentQuestionIndex = state.currentQuestionIndex || 0;
+                this.currentQuestionIndex = state.currentQuestionIndex;
                 
                 // If question changed, re-render
                 if (previousQuestionIndex !== this.currentQuestionIndex) {
@@ -31,24 +76,41 @@ class VotePage {
                     this.checkIfVoted();
                 }
             }
+            // If state is null/undefined, keep the current question - don't reset
         });
     }
 
     async loadQuizState() {
         // First try to get state from Firebase
-        const firebaseState = await FirebaseVotes.getQuizState();
-        if (firebaseState) {
-            this.currentQuestionIndex = firebaseState.currentQuestionIndex || 0;
-        } else {
-            // Fallback to localStorage
+        try {
+            const firebaseState = await FirebaseVotes.getQuizState();
+            if (firebaseState && typeof firebaseState.currentQuestionIndex === 'number') {
+                this.currentQuestionIndex = firebaseState.currentQuestionIndex;
+                console.log('Loaded question index from Firebase:', this.currentQuestionIndex);
+                return;
+            }
+        } catch (error) {
+            console.error('Error loading from Firebase:', error);
+        }
+        
+        // Fallback to localStorage
+        try {
             const state = localStorage.getItem('quizState');
             if (state) {
                 const parsed = JSON.parse(state);
-                this.currentQuestionIndex = parsed.currentQuestionIndex || 0;
-            } else {
-                this.currentQuestionIndex = 0;
+                if (typeof parsed.currentQuestionIndex === 'number') {
+                    this.currentQuestionIndex = parsed.currentQuestionIndex;
+                    console.log('Loaded question index from localStorage:', this.currentQuestionIndex);
+                    return;
+                }
             }
+        } catch (error) {
+            console.error('Error loading from localStorage:', error);
         }
+        
+        // Default to 0 only if nothing else works
+        this.currentQuestionIndex = 0;
+        console.log('Using default question index: 0');
     }
 
     getCurrentQuestion() {
@@ -123,7 +185,7 @@ class VotePage {
         
         if (hasVoted) {
             this.hasVoted = true;
-            this.showMessage('You have already voted in this award!', 'info');
+            this.showMessage('Já votaste nesta categoria!', 'info');
             this.disableVoting();
         }
     }
@@ -144,10 +206,10 @@ class VotePage {
             localStorage.setItem(voteKey, 'true');
             
             this.hasVoted = true;
-            this.showMessage('✅ Vote registered successfully!', 'success');
+            this.showMessage('✅ Voto registado com sucesso!', 'success');
             this.disableVoting();
         } else {
-            this.showMessage('❌ Error submitting vote. Please try again.', 'error');
+            this.showMessage('❌ Erro ao submeter voto. Tenta novamente.', 'error');
         }
     }
 
@@ -155,10 +217,18 @@ class VotePage {
         document.querySelectorAll('.vote-option').forEach(el => {
             el.style.cursor = 'not-allowed';
             el.style.opacity = '0.6';
-            el.onclick = null;
         });
         
         document.getElementById('submitVoteButton').disabled = true;
+    }
+
+    enableVoting() {
+        document.querySelectorAll('.vote-option').forEach(el => {
+            el.style.cursor = 'pointer';
+            el.style.opacity = '1';
+        });
+        
+        document.getElementById('submitVoteButton').disabled = true; // Still disabled until selection
     }
 
     showMessage(text, type = 'info') {

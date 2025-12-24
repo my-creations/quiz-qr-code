@@ -22,8 +22,8 @@ node_modules/
 # Package lock (opcional - remover se quiser manter)
 package-lock.json
 
-# Firebase local config (se usar variáveis de ambiente)
-js/firebase-config.local.js
+# Firebase local credentials (contains sensitive data)
+js/firebase-credentials.local.js
 
 # Environment files
 .env
