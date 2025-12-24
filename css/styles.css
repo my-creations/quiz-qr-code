@@ -727,6 +727,7 @@ body {
     border-radius: 10px;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 40px;
 }
 
 .continue-button:hover {

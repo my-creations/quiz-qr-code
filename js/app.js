@@ -361,9 +361,9 @@ class QuizApp {
         
         const continueButton = document.getElementById('continueButton');
         if (this.currentQuestionIndex >= questions.length - 1) {
-            continueButton.textContent = '🔄 Restart Quiz';
+            continueButton.textContent = '🔄 Recomeçar o Quiz';
         } else {
-            continueButton.textContent = 'Continue to Next Question →';
+            continueButton.textContent = 'Continuar para a Próxima Questão →';
         }
     }
 
