@@ -1,11 +1,7 @@
 class QuizApp {
     constructor() {
         this.currentQuestionIndex = 0;
-        this.timer = null;
-        this.timeRemaining = 0;
         this.qrCodeInstance = null;
-        this.isPaused = false;
-        this.lastUpdateTime = Date.now();
         this.votes = {};
         
         this.init();
@@ -15,12 +11,11 @@ class QuizApp {
         await this.loadState();
         this.renderQuestion();
         this.generateQRCode();
-        this.startTimer();
         this.setupFirebaseListeners();
         
 
         document.getElementById('continueButton').addEventListener('click', () => this.nextQuestion());
-        document.getElementById('pauseButton').addEventListener('click', () => this.togglePause());
+        document.getElementById('finishButton').addEventListener('click', () => this.finishVoting());
         document.getElementById('prevButton').addEventListener('click', () => this.previousQuestion());
         document.getElementById('nextButton').addEventListener('click', () => this.skipToNextQuestion());
         document.getElementById('fullscreenButton').addEventListener('click', () => this.toggleFullscreen());
@@ -85,8 +80,6 @@ class QuizApp {
         if (state) {
             const parsed = JSON.parse(state);
             this.currentQuestionIndex = parsed.currentQuestionIndex || 0;
-            this.timeRemaining = parsed.timeRemaining || questions[this.currentQuestionIndex].duration;
-            this.isPaused = parsed.isPaused || false;
         } else {
             this.resetQuiz();
         }
@@ -94,9 +87,7 @@ class QuizApp {
 
     saveState() {
         const state = {
-            currentQuestionIndex: this.currentQuestionIndex,
-            timeRemaining: this.timeRemaining,
-            isPaused: this.isPaused
+            currentQuestionIndex: this.currentQuestionIndex
         };
         localStorage.setItem('quizState', JSON.stringify(state));
         
@@ -104,21 +95,8 @@ class QuizApp {
         FirebaseVotes.saveQuizState(state);
     }
 
-    togglePause() {
-        this.isPaused = !this.isPaused;
-        this.saveState();
-        this.updatePauseButton();
-    }
-
-    updatePauseButton() {
-        const pauseButton = document.getElementById('pauseButton');
-        if (this.isPaused) {
-            pauseButton.textContent = 'Resume';
-            pauseButton.classList.add('paused');
-        } else {
-            pauseButton.textContent = 'Pause';
-            pauseButton.classList.remove('paused');
-        }
+    finishVoting() {
+        this.showFinalResults();
     }
 
     updateNavigationButtons() {
@@ -144,24 +122,15 @@ class QuizApp {
     }
 
     changeQuestion() {
-        if (this.timer) {
-            clearInterval(this.timer);
-        }
-        
-        this.timeRemaining = questions[this.currentQuestionIndex].duration;
-        this.isPaused = false;
         this.saveState();
         this.renderQuestion();
         this.generateQRCode();
-        this.startTimer();
         
         this.updateNavigationButtons();
-        this.updatePauseButton();
     }
 
     resetQuiz() {
         this.currentQuestionIndex = 0;
-        this.timeRemaining = questions[0].duration;
         localStorage.removeItem('quizState');
         // Reset Firebase votes
         FirebaseVotes.resetAllVotes();
@@ -178,10 +147,12 @@ class QuizApp {
         document.getElementById('questionText').textContent = question.question;
         document.getElementById('awardDescription').textContent = question.description || '';
         
-        document.getElementById('timerSection').classList.remove('hidden');
         document.getElementById('qrSection').classList.remove('hidden');
         document.getElementById('resultsSection').classList.remove('hidden');
         document.getElementById('finalResultsSection').classList.add('hidden');
+        
+        // Show navigation controls again
+        document.querySelector('.navigation-controls').classList.remove('hidden');
         
         // Initialize votes for this question in Firebase
         FirebaseVotes.initializeQuestionVotes(question.id, question.options);
@@ -189,7 +160,6 @@ class QuizApp {
         this.updateResults();
         
         this.updateNavigationButtons();
-        this.updatePauseButton();
     }
 
     generateQRCode() {
@@ -210,53 +180,6 @@ class QuizApp {
         });
         
         document.getElementById('voteUrl').textContent = voteUrl;
-    }
-
-    startTimer() {
-        if (this.timer) {
-            clearInterval(this.timer);
-        }
-
-        this.updateTimerDisplay();
-        this.lastUpdateTime = Date.now();
-
-        this.timer = setInterval(() => {
-            if (!this.isPaused) {
-                const now = Date.now();
-                const elapsed = now - this.lastUpdateTime;
-                this.lastUpdateTime = now;
-                
-                this.timeRemaining -= elapsed;
-
-                if (this.timeRemaining <= 0) {
-                    this.timeRemaining = 0;
-                    this.endVoting();
-                }
-            } else {
-                this.lastUpdateTime = Date.now();
-            }
-
-            this.updateTimerDisplay();
-            this.saveState();
-        }, 100);
-    }
-
-    updateTimerDisplay() {
-        const seconds = Math.ceil(this.timeRemaining / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        
-        const display = `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-        const timerElement = document.getElementById('timerDisplay');
-        timerElement.textContent = display;
-        
-        timerElement.classList.remove('warning', 'danger');
-        if (seconds <= 10) {
-            timerElement.classList.add('danger');
-        } else if (seconds <= 30) {
-            timerElement.classList.add('warning');
-        }
-        
     }
 
     // Votes are now handled by Firebase real-time listeners
@@ -339,14 +262,6 @@ class QuizApp {
         });
     }
 
-    endVoting() {
-        if (this.timer) {
-            clearInterval(this.timer);
-        }
-        
-        this.showFinalResults();
-    }
-
     showFinalResults() {
         const question = this.getCurrentQuestion();
         const votes = this.getVotes();
@@ -390,6 +305,13 @@ class QuizApp {
             winnerAnnouncement.insertBefore(winnerImg, winnerOptionElement);
         }
         
+        // Sort options by votes
+        const sortedOptions = [...question.options].sort((a, b) => {
+            const votesA = questionVotes[this.getOptionText(a)] || 0;
+            const votesB = questionVotes[this.getOptionText(b)] || 0;
+            return votesB - votesA;
+        });
+        
         const container = document.getElementById('finalOptionsContainer');
         container.innerHTML = '';
         
@@ -404,9 +326,10 @@ class QuizApp {
             const optionImage = this.getOptionImage(option);
             const voteCount = questionVotes[optionText] || 0;
             const percentage = totalVotes > 0 ? ((voteCount / totalVotes) * 100).toFixed(1) : 0;
+            const isWinner = optionText === winner;
             
             const optionDiv = document.createElement('div');
-            optionDiv.className = 'option-item';
+            optionDiv.className = isWinner ? 'option-item winner-highlight' : 'option-item';
             
             let imageHtml = '';
             if (optionImage) {
@@ -416,22 +339,22 @@ class QuizApp {
             optionDiv.innerHTML = `
                 <div class="option-content">
                     ${imageHtml}
-                    <span class="option-text">${optionText}</span>
+                    <span class="option-text">${isWinner ? '🏆 ' : ''}${optionText}</span>
                     <div class="option-stats">
                         <span class="option-percentage">${percentage}%</span>
-                        <span class="option-votes">${voteCount} votes</span>
+                        <span class="option-votes">${voteCount} votos</span>
                     </div>
                 </div>
                 <div class="option-progress">
-                    <div class="option-progress-fill" style="width: ${percentage}%"></div>
+                    <div class="option-progress-fill ${isWinner ? 'winner' : ''}" style="width: ${percentage}%"></div>
                 </div>
             `;
             
             container.appendChild(optionDiv);
         });
         
-        document.getElementById('questionSection').classList.add('hidden');
-        document.getElementById('timerSection').classList.add('hidden');
+        // Hide navigation controls and QR section when showing results
+        document.querySelector('.navigation-controls').classList.add('hidden');
         document.getElementById('qrSection').classList.add('hidden');
         document.getElementById('resultsSection').classList.add('hidden');
         document.getElementById('finalResultsSection').classList.remove('hidden');

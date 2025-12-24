@@ -101,17 +101,42 @@ In Firebase Console → Realtime Database → Rules, set:
 
 1. Clone or download this repository
 2. Configure Firebase (see above)
-3. Open `index.html` in a browser (control panel)
-4. Scan the QR Code or open `vote.html` on other devices to vote
+3. Generate local config: `npm run setup`
+4. Open `index.html` in a browser (control panel)
+5. Scan the QR Code or open `vote.html` on other devices to vote
 
 ### On GitHub Pages
 
 1. Create a repository on GitHub
 2. Upload all files
-3. Go to Settings > Pages
-4. Select the `main` branch and `/root` folder
-5. Wait a few minutes
+3. Add repository secrets (Settings → Secrets → Actions):
+   - `FIREBASE_API_KEY`
+   - `FIREBASE_AUTH_DOMAIN`
+   - `FIREBASE_DATABASE_URL`
+   - `FIREBASE_PROJECT_ID`
+   - `FIREBASE_STORAGE_BUCKET`
+   - `FIREBASE_MESSAGING_SENDER_ID`
+   - `FIREBASE_APP_ID`
+4. Go to Settings → Pages → Source → Select **"GitHub Actions"**
+5. Push changes and wait for deployment
 6. Access: `https://your-username.github.io/repo-name/`
+
+## 🧹 Reset Votes & Database
+
+To clear all votes and allow re-voting, open the browser console (F12) on the main page and run:
+
+```javascript
+// Clear all votes in Firebase
+FirebaseVotes.resetAllVotes();
+
+// Clear local voting history (allows voting again on same device)
+localStorage.clear();
+
+// Reload the page
+location.reload();
+```
+
+Or clear data directly in [Firebase Console](https://console.firebase.google.com/) → Realtime Database → Delete `votes` and `quizState` nodes.
 
 ## ⚙️ Questions Configuration
 

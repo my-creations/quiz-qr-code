@@ -2,9 +2,7 @@ class VotePage {
     constructor() {
         this.selectedOption = null;
         this.hasVoted = false;
-        this.timer = null;
         this.currentQuestionIndex = 0;
-        this.timeRemaining = 0;
         
         this.init();
     }
@@ -13,7 +11,6 @@ class VotePage {
         await this.loadQuizState();
         this.renderQuestion();
         this.checkIfVoted();
-        this.startTimer();
         this.setupFirebaseListeners();
         
         document.getElementById('submitVoteButton').addEventListener('click', () => this.submitVote());
@@ -25,7 +22,6 @@ class VotePage {
             if (state) {
                 const previousQuestionIndex = this.currentQuestionIndex;
                 this.currentQuestionIndex = state.currentQuestionIndex || 0;
-                this.timeRemaining = state.timeRemaining || questions[this.currentQuestionIndex].duration;
                 
                 // If question changed, re-render
                 if (previousQuestionIndex !== this.currentQuestionIndex) {
@@ -43,17 +39,14 @@ class VotePage {
         const firebaseState = await FirebaseVotes.getQuizState();
         if (firebaseState) {
             this.currentQuestionIndex = firebaseState.currentQuestionIndex || 0;
-            this.timeRemaining = firebaseState.timeRemaining || questions[this.currentQuestionIndex].duration;
         } else {
             // Fallback to localStorage
             const state = localStorage.getItem('quizState');
             if (state) {
                 const parsed = JSON.parse(state);
                 this.currentQuestionIndex = parsed.currentQuestionIndex || 0;
-                this.timeRemaining = parsed.timeRemaining || questions[this.currentQuestionIndex].duration;
             } else {
                 this.currentQuestionIndex = 0;
-                this.timeRemaining = questions[0].duration;
             }
         }
     }
@@ -107,7 +100,7 @@ class VotePage {
     }
 
     selectOption(option) {
-        if (this.hasVoted || this.timeRemaining <= 0) {
+        if (this.hasVoted) {
             return;
         }
         
@@ -136,7 +129,7 @@ class VotePage {
     }
 
     async submitVote() {
-        if (!this.selectedOption || this.hasVoted || this.timeRemaining <= 0) {
+        if (!this.selectedOption || this.hasVoted) {
             return;
         }
         
@@ -166,54 +159,6 @@ class VotePage {
         });
         
         document.getElementById('submitVoteButton').disabled = true;
-    }
-
-    startTimer() {
-        this.updateTimerDisplay();
-
-        this.timer = setInterval(async () => {
-            // Reload quiz state from Firebase to stay in sync
-            const firebaseState = await FirebaseVotes.getQuizState();
-            if (firebaseState) {
-                this.timeRemaining = firebaseState.timeRemaining || 0;
-            }
-            
-            if (this.timeRemaining <= 0) {
-                this.timeRemaining = 0;
-                this.endVoting();
-            }
-
-            this.updateTimerDisplay();
-        }, 500);
-    }
-
-    updateTimerDisplay() {
-        const seconds = Math.ceil(this.timeRemaining / 1000);
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        
-        const display = `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-        const timerElement = document.getElementById('voteTimerDisplay');
-        timerElement.textContent = display;
-        
-        timerElement.classList.remove('warning', 'danger');
-        if (seconds <= 10) {
-            timerElement.classList.add('danger');
-        } else if (seconds <= 30) {
-            timerElement.classList.add('warning');
-        }
-    }
-
-    endVoting() {
-        if (this.timer) {
-            clearInterval(this.timer);
-        }
-        
-        if (!this.hasVoted) {
-            this.showMessage('⏰ Time expired! Voting has been closed.', 'error');
-        }
-        
-        this.disableVoting();
     }
 
     showMessage(text, type = 'info') {
