@@ -8,7 +8,6 @@ const questions = [
             { text: "Pedro Bargão", image: "images/Pedro Bargão.jpeg" },
             { text: "João Pereira", image: "images/João Pereira.jpeg" }
         ],
-        duration: 120000
     },
     {
         id: 2,
@@ -19,7 +18,6 @@ const questions = [
             "Aires Figueiredo",
             { text: "Ricardo Gorjão", image: "images/Ricardo Gorjão.jpeg" }
         ],
-        duration: 120000
     },
     {
         id: 3,
@@ -31,7 +29,6 @@ const questions = [
             "Jéssica Almeida",
             "Sónia Reis"
         ],
-        duration: 120000
     },
     {
         id: 4,
@@ -42,7 +39,6 @@ const questions = [
             { text: "Mafalda Monteiro", image: "images/Mafalda Monteiro.jpeg" },
             { text: "Conceição Alves", image: "images/Conceição Alves.jpeg" },
         ],
-        duration: 120000
     },
     {
         id: 5,
@@ -54,7 +50,6 @@ const questions = [
             "Francisca",
             { text: "Gonçalo", image: "images/Gonçalo.jpeg" }
         ],
-        duration: 120000
     },
     {
         id: 6,
@@ -66,7 +61,6 @@ const questions = [
             { text: "Diana Carvalho", image: "images/Diana Carvalho.jpeg" },
             { text: "Cristiana Sabino", image: "images/Cristiana Sabino.jpeg" }
         ],
-        duration: 120000
     },
     {
         id: 7,
@@ -78,7 +72,6 @@ const questions = [
             "Cristina Pestana",
             "Isabel Bonifácio"
         ],
-        duration: 120000
     },
     {
         id: 8,
@@ -89,7 +82,6 @@ const questions = [
             { text: "Ana Pires", image: "images/Ana Pires.jpeg" },
             { text: "Maria dos Anjos", image: "images/Maria dos Anjos.jpeg" }
         ],
-        duration: 120000
     },
     {
         id: 9,
@@ -100,7 +92,6 @@ const questions = [
             { text: "Paulo Ratilal", image: "images/Paulo Ratilal.jpeg" },
             { text: "Bruno Pereira", image: "images/Bruno Pereira.jpeg" }
         ],
-        duration: 120000
     },
     {
         id: 10,
@@ -111,7 +102,6 @@ const questions = [
             { text: "Rita Ornelas", image: "images/Rita Ornelas.jpeg" },
             { text: "Bruno Carneiro", image: "images/Bruno Carneiro.jpeg" }
         ],
-        duration: 120000
     },
     {
         id: 11,
@@ -123,7 +113,6 @@ const questions = [
             { text: "Soraia Duarte", image: "images/Soraia.jpeg" },
             "Fifi"
         ],
-        duration: 120000
     },
     {
         id: 12,
@@ -134,7 +123,6 @@ const questions = [
             { text: "Rita Serejo", image: "images/Rita Serejo.jpeg" },
             { text: "Susana Filipa", image: "images/Susana Filipa.jpeg" }
         ],
-        duration: 120000
     },
     {
         id: 13,
@@ -146,7 +134,6 @@ const questions = [
             { text: "Sandra Camilo", image: "images/Sandra Camilo.jpeg" },
             { text: "Márcia Dias", image: "images/Márcia Dias.jpeg" }
         ],
-        duration: 120000
     },
     {
         id: 14,
@@ -158,7 +145,6 @@ const questions = [
             "Raquel Ferreira",
             { text: "Nina Câmara", image: "images/Nina Câmara.jpeg" }
         ],
-        duration: 120000
     },
     {
         id: 15,
@@ -170,6 +156,5 @@ const questions = [
             { text: "Rita Semedo", image: "images/Rita Semedo.jpeg" },
             "Margarida Pires"
         ],
-        duration: 120000
     }
 ];

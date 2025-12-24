@@ -1,46 +1,42 @@
-# 🎯 Real-Time Voting Quiz
+# 🏆 ESPECIAIS DE OURO - Real-Time Voting Quiz
 
-Interactive voting system with QR Code, timer, and real-time results. Hostable on GitHub Pages with Firebase for real-time vote synchronization!
+Interactive voting system with QR Code and real-time results. Hostable on GitHub Pages with Firebase for real-time vote synchronization!
 
 ## ✨ Features
 
 - ✅ Automatic QR Code generation for voting
-- ✅ Configurable timer per question (default: 1 minute)
 - ✅ Navigation controls (previous/next question)
-- ✅ Pause/resume timer
+- ✅ Manual "Concluir" button to reveal winner
 - ✅ Fullscreen mode for presentations
 - ✅ Real-time results with graphics
-- ✅ Results page with winning option
+- ✅ Winner announcement with highlight effects
 - ✅ Support for images in options
 - ✅ Multiple configurable questions
 - ✅ Responsive and modern design
 - ✅ **Real-time vote sync across devices via Firebase**
+- ✅ **Reset button** to clear all votes on all devices
+- ✅ **Automatic environment detection** (local vs production)
 
 ## 📁 Project Structure
 
 ```
 quiz-qr-code/
-├── index.html              # Main panel (display results)
-├── vote.html               # Voting page
+├── index.html                          # Main panel (display results)
+├── vote.html                           # Voting page
 ├── css/
-│   └── styles.css          # Application styles
+│   └── styles.css                      # Application styles
 ├── js/
-│   ├── questions.js        # Questions configuration
-│   ├── firebase-config.js  # Firebase configuration
-│   ├── app.js              # Main panel logic
-│   └── vote.js             # Voting page logic
-├── images/                 # Images for options
-│   ├── IMG_4039.jpeg
-│   ├── IMG_4045.jpeg
-│   ├── IMG_4135.jpeg
-│   └── IMG_4136.jpeg
-├── docs/
-│   ├── README.md           # Detailed documentation
-│   └── PLANO.md            # Development plan
+│   ├── questions.js                    # Questions configuration
+│   ├── firebase-config.js              # Firebase configuration (auto-detects environment)
+│   ├── firebase-credentials.local.js   # Local Firebase credentials (gitignored)
+│   ├── firebase-credentials.template.js # Template for local credentials
+│   ├── app.js                          # Main panel logic
+│   └── vote.js                         # Voting page logic
+├── images/                             # Images for options
 └── .gitignore
 ```
 
-## 🔥 Firebase Setup (Required for GitHub Pages)
+## 🔥 Firebase Setup (Required)
 
 To enable real-time voting across devices, you need to set up a free Firebase project:
 
@@ -64,12 +60,18 @@ To enable real-time voting across devices, you need to set up a free Firebase pr
 3. Register your app with a nickname
 4. Copy the `firebaseConfig` object
 
-### Step 4: Update firebase-config.js
+### Step 4: Set Up Local Credentials
 
-Open `js/firebase-config.js` and replace the placeholder values:
+For local development, create your credentials file:
+
+```bash
+cp js/firebase-credentials.template.js js/firebase-credentials.local.js
+```
+
+Then edit `js/firebase-credentials.local.js` with your Firebase values:
 
 ```javascript
-const firebaseConfig = {
+const localFirebaseCredentials = {
     apiKey: "YOUR_API_KEY",
     authDomain: "your-project.firebaseapp.com",
     databaseURL: "https://your-project-default-rtdb.firebaseio.com",
@@ -79,6 +81,8 @@ const firebaseConfig = {
     appId: "your-app-id"
 };
 ```
+
+> 💡 This file is gitignored and won't be committed to the repository.
 
 ### Step 5: Set Database Rules (Important!)
 
@@ -101,7 +105,7 @@ In Firebase Console → Realtime Database → Rules, set:
 
 1. Clone or download this repository
 2. Configure Firebase (see above)
-3. Generate local config: `npm run setup`
+3. Create `js/firebase-credentials.local.js` with your credentials
 4. Open `index.html` in a browser (control panel)
 5. Scan the QR Code or open `vote.html` on other devices to vote
 
@@ -123,20 +127,13 @@ In Firebase Console → Realtime Database → Rules, set:
 
 ## 🧹 Reset Votes & Database
 
-To clear all votes and allow re-voting, open the browser console (F12) on the main page and run:
+There's a **Reset button** (🗑️ Reset) in the top-right corner of the main panel that:
 
-```javascript
-// Clear all votes in Firebase
-FirebaseVotes.resetAllVotes();
+- Clears all votes from Firebase
+- Resets to the first question
+- **Automatically allows all devices to vote again** (even mobile phones that already voted)
 
-// Clear local voting history (allows voting again on same device)
-localStorage.clear();
-
-// Reload the page
-location.reload();
-```
-
-Or clear data directly in [Firebase Console](https://console.firebase.google.com/) → Realtime Database → Delete `votes` and `quizState` nodes.
+This works across all devices in real-time - no need to clear cookies manually!
 
 ## ⚙️ Questions Configuration
 
@@ -152,8 +149,7 @@ const questions = [
             { text: "Option 1", image: "images/photo1.jpg" },
             { text: "Option 2", image: "images/photo2.jpg" },
             // up to 5 options
-        ],
-        duration: 60000 // 1 minute in milliseconds
+        ]
     },
     // Add more questions...
 ];
@@ -178,10 +174,12 @@ const questions = [
 
 ## 🎮 Panel Controls
 
-- **⏸️ Pause/Resume** - Controls the timer
-- **← Previous** - Go back to previous question
-- **→ Next** - Advance to next question
+- **🏆 Concluir** - Finish voting and reveal the winner
+- **➡️ Continuar** - After revealing winner, continue to next question
+- **← Anterior** - Go back to previous question
+- **→ Próxima** - Skip to next question
 - **🖥️ Fullscreen** - Activate fullscreen mode (ideal for presentations)
+- **🗑️ Reset** - Clear all votes and start fresh
 
 ## 🎨 Adding Images
 
@@ -192,13 +190,10 @@ const questions = [
 
 ## 💾 How Storage Works
 
-Votes are stored in the browser's **LocalStorage**:
-- Works perfectly for demos and presentations
-- Automatic synchronization between tabs of the same browser
-- Each device can vote once per question
-- To reset: clear LocalStorage or restart quiz
-
-**Limitation:** Votes are local to the browser/device. For production use with multiple devices, consider integrating Firebase Realtime Database (free).
+- **Votes** are stored in Firebase Realtime Database for real-time sync
+- **Vote history** is stored locally to prevent duplicate votes from the same device
+- **Session system** allows resetting vote history on all devices simultaneously
+- Each device can vote once per question per session
 
 ## 🌐 Compatibility
 
@@ -211,9 +206,11 @@ Votes are stored in the browser's **LocalStorage**:
 
 ### Ideal Scenario
 1. Projector/TV shows `index.html` (main panel)
-2. Audience scans QR Code
+2. Audience scans QR Code with their phones
 3. Votes on mobile via `vote.html`
 4. Results appear in real-time on projector
+5. Host clicks "Concluir" to reveal winner
+6. Click "Continuar" to move to next category
 
 ## 🎨 Customization
 
@@ -221,12 +218,6 @@ Votes are stored in the browser's **LocalStorage**:
 Edit `css/styles.css`:
 ```css
 background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-```
-
-### Adjust Timer
-Edit `js/questions.js`:
-```javascript
-duration: 120000 // 2 minutes
 ```
 
 ### Image Sizes
@@ -238,12 +229,14 @@ Edit `css/styles.css`:
 }
 ```
 
-## 🔧 Possible Future Improvements
+## 📄 License
 
-- [ ] Firebase Realtime Database integration
-- [ ] Authentication system with unique code
-- [ ] Export results to CSV/PDF
-- [ ] Animated charts with Chart.js
-- [ ] Notification sounds
-- [ ] Dark mode
-- [ ] Historical results analysis
+This project is open source and free for personal and commercial use.
+
+## 🤝 Contributions
+
+Contributions are welcome! Feel free to open issues or pull requests.
+
+---
+
+Created with ❤️ to make presentations more interactive!
