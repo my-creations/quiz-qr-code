@@ -125,6 +125,10 @@ class VotePage {
         return typeof option === 'string' ? null : option.image;
     }
 
+    getOptionImagePosition(option) {
+        return typeof option === 'string' ? 'top' : (option.imagePosition || 'top');
+    }
+
     renderQuestion() {
         const question = this.getCurrentQuestion();
         
@@ -136,6 +140,7 @@ class VotePage {
         question.options.forEach(option => {
             const optionText = this.getOptionText(option);
             const optionImage = this.getOptionImage(option);
+            const optionImagePosition = this.getOptionImagePosition(option);
             
             const optionDiv = document.createElement('div');
             optionDiv.className = 'vote-option';
@@ -146,6 +151,7 @@ class VotePage {
                 img.src = optionImage;
                 img.alt = optionText;
                 img.className = 'vote-option-image';
+                img.style.objectPosition = optionImagePosition;
                 img.onerror = function() { this.style.display = 'none'; };
                 optionDiv.appendChild(img);
             }
