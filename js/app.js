@@ -19,13 +19,7 @@ class QuizApp {
         document.getElementById('finishButton').addEventListener('click', () => this.handleFinishButton());
         document.getElementById('prevButton').addEventListener('click', () => this.previousQuestion());
         document.getElementById('nextButton').addEventListener('click', () => this.skipToNextQuestion());
-        document.getElementById('fullscreenButton').addEventListener('click', () => this.toggleFullscreen());
         document.getElementById('resetButton').addEventListener('click', () => this.confirmReset());
-        
-        document.addEventListener('fullscreenchange', () => this.updateFullscreenButton());
-        document.addEventListener('webkitfullscreenchange', () => this.updateFullscreenButton());
-        document.addEventListener('mozfullscreenchange', () => this.updateFullscreenButton());
-        document.addEventListener('MSFullscreenChange', () => this.updateFullscreenButton());
         
         this.updateNavigationButtons();
     }
@@ -149,7 +143,7 @@ class QuizApp {
     changeQuestion() {
         this.saveState();
         this.renderQuestion();
-        this.generateQRCode();
+        // QR code não precisa ser regenerado - URL é sempre o mesmo
         
         this.updateNavigationButtons();
     }
@@ -188,6 +182,9 @@ class QuizApp {
         this.updateNavigationButtons();
         
         alert('✅ Reset completo! Todos os votos foram apagados.');
+        
+        // Redirect to landing page
+        window.location.href = 'index.html';
     }
 
     getCurrentQuestion() {
@@ -228,10 +225,13 @@ class QuizApp {
         const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
         const voteUrl = baseUrl + '/vote.html';
         
+        // Adjust QR size based on screen height for 720p compatibility
+        const qrSize = window.innerHeight <= 720 ? 150 : 230;
+        
         this.qrCodeInstance = new QRCode(qrContainer, {
             text: voteUrl,
-            width: 230,
-            height: 230,
+            width: qrSize,
+            height: qrSize,
             colorDark: "#000000",
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
@@ -272,6 +272,12 @@ class QuizApp {
         return typeof option === 'string' ? null : option.image;
     }
 
+    getOptionImagePosition(option) {
+        // Returns custom position or default 'top'
+        // Options: 'top', 'center', 'bottom', '20%', etc.
+        return typeof option === 'string' ? 'top' : (option.imagePosition || 'top');
+    }
+
     updateResults() {
         const question = this.getCurrentQuestion();
         const votes = this.getVotes();
@@ -291,6 +297,7 @@ class QuizApp {
         question.options.forEach(option => {
             const optionText = this.getOptionText(option);
             const optionImage = this.getOptionImage(option);
+            const optionImagePosition = this.getOptionImagePosition(option);
             const voteCount = questionVotes[optionText] || 0;
             const percentage = totalVotes > 0 ? ((voteCount / totalVotes) * 100).toFixed(1) : 0;
             
@@ -299,21 +306,33 @@ class QuizApp {
             
             let imageHtml = '';
             if (optionImage) {
-                imageHtml = `<img src="${optionImage}" alt="${optionText}" class="option-image" onerror="this.style.display='none'">`;
+                imageHtml = `<img src="${optionImage}" alt="${optionText}" class="option-image" style="object-position: ${optionImagePosition};" onerror="this.style.display='none'">`;
+            }
+            
+            // Only show stats after voting is concluded (isShowingResults = true)
+            let statsHtml = '';
+            let progressHtml = '';
+            if (this.isShowingResults) {
+                statsHtml = `
+                    <div class="option-stats">
+                        <span class="option-percentage">${percentage}%</span>
+                        <span class="option-votes">${voteCount} votes</span>
+                    </div>
+                `;
+                progressHtml = `
+                    <div class="option-progress">
+                        <div class="option-progress-fill" style="width: ${percentage}%"></div>
+                    </div>
+                `;
             }
             
             optionDiv.innerHTML = `
                 <div class="option-content">
                     ${imageHtml}
                     <span class="option-text">${optionText}</span>
-                    <div class="option-stats">
-                        <span class="option-percentage">${percentage}%</span>
-                        <span class="option-votes">${voteCount} votes</span>
-                    </div>
+                    ${statsHtml}
                 </div>
-                <div class="option-progress">
-                    <div class="option-progress-fill" style="width: ${percentage}%"></div>
-                </div>
+                ${progressHtml}
             `;
             
             container.appendChild(optionDiv);
@@ -382,6 +401,7 @@ class QuizApp {
         sortedOptions.forEach(option => {
             const optionText = this.getOptionText(option);
             const optionImage = this.getOptionImage(option);
+            const optionImagePosition = this.getOptionImagePosition(option);
             const voteCount = questionVotes[optionText] || 0;
             const percentage = totalVotes > 0 ? ((voteCount / totalVotes) * 100).toFixed(1) : 0;
             const isWinner = optionText === winner;
@@ -391,7 +411,7 @@ class QuizApp {
             
             let imageHtml = '';
             if (optionImage) {
-                imageHtml = `<img src="${optionImage}" alt="${optionText}" class="option-image" onerror="this.style.display='none'">`;
+                imageHtml = `<img src="${optionImage}" alt="${optionText}" class="option-image" style="object-position: ${optionImagePosition};" onerror="this.style.display='none'">`;
             }
             
             optionDiv.innerHTML = `

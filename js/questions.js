@@ -15,7 +15,7 @@ const questions = [
         description: "Este prémio vai para a pessoa que leva o conceito de limpeza intestinal a outro nível, a pessoa que não se contenta com um intestino limpo, quer um intestino esterilizado ao nível de sala branca da NASA.\nDiz-se por aí que no final de uma colonoscopia o intestino fica tão limpo que podíamos fazer lá dentro um piquenique.",
         options: [
             { text: "Sandra Pires", image: "images/Sandra Pires.jpeg" },
-            "Aires Figueiredo",
+            { text: "Aires Figueiredo", image: "images/Aires Figueiredo.jpeg", imagePosition: "center 20%" },
             { text: "Ricardo Gorjão", image: "images/Ricardo Gorjão.jpeg" }
         ],
     },
@@ -24,10 +24,10 @@ const questions = [
         question: "Prémio: Flash",
         description: "Este prémio vai para o auxiliar que desafia as leis da física hospitalar. Está em três postos ao mesmo tempo, muda lençóis, prepara salas, e ainda tem tempo para dizer 'já está feito' antes de alguém pedir!",
         options: [
-            "Carla Costa",
+            { text: "Carla Costa", image: "images/Carla Costa.jpeg", imagePosition: "center" },
             { text: "Pedro Bernardo", image: "images/Pedro Bernardo.jpeg" },
-            "Jéssica Almeida",
-            "Sónia Reis"
+            { text: "Jéssica Almeida", image: "images/Jéssica Almeida.jpeg" },
+            { text: "Sónia Reis", image: "images/Sónia Reis.jpeg", imagePosition: "center" }
         ],
     },
     {
@@ -45,9 +45,9 @@ const questions = [
         question: "Prémio: Tudo Sob Control (Mais ou Menos)",
         description: "Este prémio celebra o administrativo que transforma o dia a dia do serviço numa verdadeira montanha-russa de emoções. Sempre bem-disposto e pronto a ajudar, consegue transformar até os pequenos imprevistos em momentos de boa disposição. Entre etiquetas trocadas e processos que desaparecem misteriosamente, garantem sempre uma dose diária de adrenalina.",
         options: [
-            "Mara",
-            "Mariana",
-            "Francisca",
+            { text: "Mara", image: "images/Mara.jpeg" },
+            { text: "Mariana", image: "images/Mariana.jpeg" },
+            { text: "André", image: "images/André.jpeg" },
             { text: "Gonçalo", image: "images/Gonçalo.jpeg" }
         ],
     },
@@ -68,9 +68,9 @@ const questions = [
         description: "Encontrar um anestesista disponível é mais difícil do que começar um exame à hora certa. Passam o dia a correr de sala em sala, a adormecer uns e a tentar não adormecer eles próprios. Por isso, este prémio vai para o verdadeiro herói silencioso, o mestre da calma e do multitasking extremo.",
         options: [
             { text: "Rita Fragoso", image: "images/Rita Fragoso.jpeg" },
-            "Ana Machado",
-            "Cristina Pestana",
-            "Isabel Bonifácio"
+            { text: "Ana Machado", image: "images/Ana Machado.jpeg" },
+            { text: "Cristina Pestana", image: "images/Cristina Pestana.jpeg" },
+            { text: "Isabel Bonifácio", image: "images/Isabel Bonifácio.jpeg" }
         ],
     },
     {
@@ -98,7 +98,7 @@ const questions = [
         question: "Prémio: Grávida do Ano",
         description: "Este prémio distingue a pessoa que não só está a fabricar/fabricou um ser humano, como ainda consegue gerir desejos estranhos, ataques de choro/riso, birras hormonais e fome súbita com um talento que desafia a medicina moderna.",
         options: [
-            "Margarida Duarte",
+            { text: "Margarida Duarte", image: "images/Margarida Duarte.jpeg" },
             { text: "Rita Ornelas", image: "images/Rita Ornelas.jpeg" },
             { text: "Bruno Carneiro", image: "images/Bruno Carneiro.jpeg" }
         ],
@@ -110,8 +110,8 @@ const questions = [
         options: [
             { text: "Susana Bernardo", image: "images/Susana Bernardo.jpeg" },
             { text: "Verónica Costa", image: "images/Verónica Costa.jpeg" },
-            { text: "Soraia Duarte", image: "images/Soraia.jpeg" },
-            "Fifi"
+            { text: "Soraia Duarte", image: "images/Soraia Duarte.jpeg" },
+            { text: "Fifi", image: "images/Fifi.jpeg" }
         ],
     },
     {
@@ -127,12 +127,12 @@ const questions = [
     {
         id: 13,
         question: "Prémio: Enfermeiro 3-em-1",
-        description: "Este prémio vai para o enfermeiro que reúne três características raríssimas no mesmo ser humano: competência absoluta, calma inabalável e uma rapidez irritantemente natural. É aquele enfermeiro que improvisa tão bem que até devia ter um diploma secundário em \"desenrascanço avançado\". Este prémio vai para quem prova diariamente que competência, calma e rapidez podem existir no mesmo corpo e que ainda sobra espaço para aturar todos nós sem perder a paciência.",
+        description: "Este prémio vai para o enfermeiro que reúne três características raríssimas no mesmo ser humano: empatia genuína, calma inabalável e uma rapidez irritantemente natural.\nÉ aquele enfermeiro que percebe o que alguém precisa antes mesmo de a pessoa conseguir explicar, que mantém a serenidade quando tudo à volta acelera e que resolve situações em tempo recorde como se fosse a coisa mais natural do mundo sem perder o controlo e o sorriso.",
         options: [
-            "Vera Fonseca",
+            { text: "Vera Fonseca", image: "images/Vera Fonseca.jpeg" },
             { text: "Patrícia Marinheiro", image: "images/Patricia Marinheiro.jpeg" },
-            { text: "Sandra Camilo", image: "images/Sandra Camilo.jpeg" },
-            { text: "Márcia Dias", image: "images/Márcia Dias.jpeg" }
+            { text: "Sandra Camilo", image: "images/Sandra Camilo.jpeg", imagePosition: "center 20%" },
+            { text: "Márcia Dias", image: "images/Márcia Dias.jpeg", imagePosition: "center 20%" }
         ],
     },
     {
@@ -140,21 +140,42 @@ const questions = [
         question: "Prémio: Simpatia Natural",
         description: "Este prémio distingue aquela pessoa que não precisa de fazer esforços, cursos, workshops, terapia de grupo ou respirações profundas para ser simpática. Ela simplesmente… é. É simpática por defeito de fábrico. Enquanto alguns acordam maldispostos só porque o despertador tocou, esta pessoa aparece sempre com um sorriso ou pelo menos um ar suficientemente agradável para não assustar ninguém.",
         options: [
-            "Filipa Santos",
+            { text: "Filipa Santos", image: "images/Filipa Santos.jpeg" },
             { text: "Céu Baptista", image: "images/Céu Baptista.jpeg" },
-            "Raquel Ferreira",
+            { text: "Raquel Ferreira", image: "images/Raquel Ferreira.jpeg" },
             { text: "Nina Câmara", image: "images/Nina Câmara.jpeg" }
         ],
     },
     {
         id: 15,
+        question: "Prémio: Fazes cá falta",
+        description: "Este prémio é atribuído não a quem morreu, mas a quem deixou o nosso serviço e nos lembrou que afinal faz cá falta e deixou um espaço que ninguém conseguiu preencher da mesma forma. É para quem saiu do nosso dia a dia, mas ficou nas histórias, nas memórias e naquele pensamento recorrente: “Se ele/ela estivesse aqui…”",
+        options: [
+            { text: "António", image: "images/António.jpeg" },
+            { text: "Inês Duarte", image: "images/Inês Duarte.jpeg" },
+            { text: "Carlos Gaspar", image: "images/Carlos Gaspar.jpeg" },
+            { text: "Latifa", image: "images/Latifa.jpeg" }
+        ],
+    },
+    {
+        id: 16,
+        question: "Prémio: Carreira",
+        description: "O Prémio Carreira celebra um percurso feito de dedicação e propósito.\nNão se mede apenas pelo que foi alcançado, mas pelo impacto deixado em quem trabalhou ao seu lado.\nUm caminho que inspirou, ensinou e continua presente.",
+        options: [
+            { text: "António Bugalho", image: "images/António Bugalho.jpeg" },
+            { text: "Manuela Lança", image: "images/Manuela Lança.jpeg" },
+            { text: "Ricardo Gorjão", image: "images/Ricardo Gorjão.jpeg" }
+        ],
+    },
+    {
+        id: 17,
         question: "Prémio: Categoria que inventámos só para vos meter aqui",
         description: "Este prémio existe por um motivo muito simples: não sabíamos onde pôr estas quatro pessoas. Nenhuma categoria vos servia, nenhuma descrição vos encaixava, e juntar-vos parecia um exercício de criatividade… ou desespero. Por isso, criámos esta categoria especialmente para vocês — uma categoria onde não é preciso ter nada em comum, nem talento específico, nem sequer uma justificação lógica. Basta… existir. E vocês fazem isso lindamente. Aqui, tudo é válido: votar por afinidade, por simpatia, por instinto ou só porque gostam do nome.",
         options: [
-            "Paula",
+            { text: "Paula", image: "images/Paula.jpeg" },
             { text: "Manuel Teixeira", image: "images/Manuel Teixeira.jpeg" },
             { text: "Rita Semedo", image: "images/Rita Semedo.jpeg" },
-            "Margarida Pires"
+            { text: "Margarida Pires", image: "images/Margarida Pires.jpeg" }
         ],
     }
 ];
