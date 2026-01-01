@@ -654,7 +654,6 @@ body {
     width: 100px;
     height: 100px;
     object-fit: cover;
-    object-position: top;
     background: #f8f9fa;
     border-radius: 50%;
     border: 3px solid #d4af37;

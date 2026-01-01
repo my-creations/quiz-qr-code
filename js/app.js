@@ -382,23 +382,17 @@ class QuizApp {
             winnerAnnouncement.insertBefore(winnerImg, winnerOptionElement);
         }
         
-        // Sort options by votes
-        const sortedOptions = [...question.options].sort((a, b) => {
-            const votesA = questionVotes[this.getOptionText(a)] || 0;
-            const votesB = questionVotes[this.getOptionText(b)] || 0;
-            return votesB - votesA;
-        });
-        
+        // Keep original order (no sorting)
         const container = document.getElementById('finalOptionsContainer');
         container.innerHTML = '';
         
-        if (sortedOptions.length > 2) {
+        if (question.options.length > 2) {
             container.className = 'options-container-grid';
         } else {
             container.className = '';
         }
         
-        sortedOptions.forEach(option => {
+        question.options.forEach(option => {
             const optionText = this.getOptionText(option);
             const optionImage = this.getOptionImage(option);
             const optionImagePosition = this.getOptionImagePosition(option);
