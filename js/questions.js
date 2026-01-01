@@ -48,7 +48,7 @@ const questions = [
             { text: "Mara", image: "images/Mara.jpeg" },
             { text: "Mariana", image: "images/Mariana.jpeg" },
             { text: "André", image: "images/André.jpeg" },
-            { text: "Gonçalo", image: "images/Gonçalo.jpeg" }
+            { text: "Gonçalo", image: "images/Gonçalo.jpeg", imagePosition: "center 20%" }
         ],
     },
     {

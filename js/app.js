@@ -347,6 +347,7 @@ class QuizApp {
         let maxVotes = 0;
         let winner = '';
         let winnerImage = null;
+        let winnerImagePosition = 'top';
         
         question.options.forEach(option => {
             const optionText = this.getOptionText(option);
@@ -355,6 +356,7 @@ class QuizApp {
                 maxVotes = voteCount;
                 winner = optionText;
                 winnerImage = this.getOptionImage(option);
+                winnerImagePosition = this.getOptionImagePosition(option);
             }
         });
         
@@ -376,6 +378,7 @@ class QuizApp {
             winnerImg.src = winnerImage;
             winnerImg.alt = winner;
             winnerImg.className = 'winner-image';
+            winnerImg.style.objectPosition = winnerImagePosition;
             winnerImg.onerror = function() { this.style.display = 'none'; };
             
             const winnerOptionElement = document.getElementById('winnerOption');
