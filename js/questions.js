@@ -38,6 +38,7 @@ const questions = [
             { text: "Teresa Fraga", image: "images/Teresa Fraga.jpeg" },
             { text: "Mafalda Monteiro", image: "images/Mafalda Monteiro.jpeg" },
             { text: "Conceição Alves", image: "images/Conceição Alves.jpeg" },
+            { text: "Rui Viana", image: "images/Rui Viana.jpeg" }
         ],
     },
     {
@@ -45,10 +46,10 @@ const questions = [
         question: "Prémio: Tudo Sob Control (Mais ou Menos)",
         description: "Este prémio celebra o administrativo que transforma o dia a dia do serviço numa verdadeira montanha-russa de emoções. Sempre bem-disposto e pronto a ajudar, consegue transformar até os pequenos imprevistos em momentos de boa disposição. Entre etiquetas trocadas e processos que desaparecem misteriosamente, garantem sempre uma dose diária de adrenalina.",
         options: [
-            { text: "Mara", image: "images/Mara.jpeg" },
-            { text: "Mariana", image: "images/Mariana.jpeg" },
-            { text: "André", image: "images/André.jpeg" },
-            { text: "Gonçalo", image: "images/Gonçalo.jpeg", imagePosition: "center 20%" }
+            { text: "Mara Lima", image: "images/Mara Lima.jpeg" },
+            { text: "Mariana Soares", image: "images/Mariana Soares.jpeg", imagePosition: "center 30%" },
+            { text: "André Veloso", image: "images/André Veloso.jpeg" },
+            { text: "Gonçalo Carrilho", image: "images/Gonçalo Carrilho.jpeg", imagePosition: "center 20%" }
         ],
     },
     {
@@ -69,7 +70,7 @@ const questions = [
         options: [
             { text: "Rita Fragoso", image: "images/Rita Fragoso.jpeg" },
             { text: "Ana Machado", image: "images/Ana Machado.jpeg" },
-            { text: "Cristina Pestana", image: "images/Cristina Pestana.jpeg" },
+            { text: "Sónia Pereira", image: "images/Sónia Pereira.jpeg" },
             { text: "Isabel Bonifácio", image: "images/Isabel Bonifácio.jpeg" }
         ],
     },
@@ -110,8 +111,8 @@ const questions = [
         options: [
             { text: "Susana Bernardo", image: "images/Susana Bernardo.jpeg" },
             { text: "Verónica Costa", image: "images/Verónica Costa.jpeg" },
-            { text: "Soraia Duarte", image: "images/Soraia Duarte.jpeg" },
-            { text: "Fifi", image: "images/Fifi.jpeg" }
+            { text: "Nina Câmara", image: "images/Nina Câmara.jpeg" },
+            { text: "Fifi Barroso", image: "images/Fifi Barroso.jpeg" }
         ],
     },
     {
@@ -143,7 +144,8 @@ const questions = [
             { text: "Filipa Santos", image: "images/Filipa Santos.jpeg" },
             { text: "Céu Baptista", image: "images/Céu Baptista.jpeg" },
             { text: "Raquel Ferreira", image: "images/Raquel Ferreira.jpeg" },
-            { text: "Nina Câmara", image: "images/Nina Câmara.jpeg" }
+            { text: "Rita Passarinho", image: "images/Rita Passarinho.jpeg" },
+            { text: "Nuno Magalhães", image: "images/Nuno Magalhães.jpeg"}
         ],
     },
     {
@@ -151,10 +153,10 @@ const questions = [
         question: "Prémio: Fazes cá falta",
         description: "Este prémio é atribuído não a quem morreu, mas a quem deixou o nosso serviço e nos lembrou que afinal faz cá falta e deixou um espaço que ninguém conseguiu preencher da mesma forma. É para quem saiu do nosso dia a dia, mas ficou nas histórias, nas memórias e naquele pensamento recorrente: “Se ele/ela estivesse aqui…”",
         options: [
-            { text: "António", image: "images/António.jpeg" },
+            { text: "António Pereira", image: "images/António Pereira.jpeg" },
             { text: "Inês Duarte", image: "images/Inês Duarte.jpeg" },
             { text: "Carlos Gaspar", image: "images/Carlos Gaspar.jpeg" },
-            { text: "Latifa", image: "images/Latifa.jpeg" }
+            { text: "Latifa Ceita", image: "images/Latifa Ceita.jpeg", imagePosition: "center 30%"  }
         ],
     },
     {
@@ -172,7 +174,7 @@ const questions = [
         question: "Prémio: Categoria que inventámos só para vos meter aqui",
         description: "Este prémio existe por um motivo muito simples: não sabíamos onde pôr estas quatro pessoas. Nenhuma categoria vos servia, nenhuma descrição vos encaixava, e juntar-vos parecia um exercício de criatividade… ou desespero. Por isso, criámos esta categoria especialmente para vocês — uma categoria onde não é preciso ter nada em comum, nem talento específico, nem sequer uma justificação lógica. Basta… existir. E vocês fazem isso lindamente. Aqui, tudo é válido: votar por afinidade, por simpatia, por instinto ou só porque gostam do nome.",
         options: [
-            { text: "Paula", image: "images/Paula.jpeg" },
+            { text: "Paula Pasadas", image: "images/Paula Pasadas.jpeg" },
             { text: "Manuel Teixeira", image: "images/Manuel Teixeira.jpeg" },
             { text: "Rita Semedo", image: "images/Rita Semedo.jpeg" },
             { text: "Margarida Pires", image: "images/Margarida Pires.jpeg" }
