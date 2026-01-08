@@ -14,6 +14,7 @@ class VotePage {
         this.renderQuestion();
         this.checkIfVoted();
         this.setupFirebaseListeners();
+        await this.checkInitialRevealState();
         
         document.getElementById('submitVoteButton').addEventListener('click', () => this.submitVote());
     }
@@ -59,6 +60,15 @@ class VotePage {
                 this.renderQuestion();
                 this.enableVoting();
                 this.showMessage('🔄 Nova sessão! Podes votar novamente.', 'info');
+            }
+        });
+
+        // Listen for candidates revealed state
+        FirebaseVotes.onCandidatesRevealedChange((revealed, questionIndex) => {
+            if (revealed && questionIndex === this.currentQuestionIndex) {
+                this.showCandidates();
+            } else if (questionIndex === this.currentQuestionIndex) {
+                this.hideCandidates();
             }
         });
         
@@ -249,6 +259,27 @@ class VotePage {
             setTimeout(() => {
                 container.innerHTML = '';
             }, 5000);
+        }
+    }
+
+    showCandidates() {
+        document.getElementById('waitingMessage').classList.add('hidden');
+        document.getElementById('voteOptionsSection').classList.remove('hidden');
+        document.getElementById('submitVoteButton').classList.remove('hidden');
+    }
+
+    hideCandidates() {
+        document.getElementById('waitingMessage').classList.remove('hidden');
+        document.getElementById('voteOptionsSection').classList.add('hidden');
+        document.getElementById('submitVoteButton').classList.add('hidden');
+    }
+
+    async checkInitialRevealState() {
+        const state = await FirebaseVotes.getCandidatesRevealed();
+        if (state && state.revealed && state.questionIndex === this.currentQuestionIndex) {
+            this.showCandidates();
+        } else {
+            this.hideCandidates();
         }
     }
 }

@@ -4,6 +4,9 @@ class QuizApp {
         this.qrCodeInstance = null;
         this.votes = {};
         this.isShowingResults = false;
+        this.areCandidatesRevealed = false;
+        this.raffleWheel = null;
+        this.isShowingRaffle = false;
         
         this.init();
     }
@@ -92,18 +95,34 @@ class QuizApp {
     }
 
     handleFinishButton() {
-        if (this.isShowingResults) {
-            // Already showing results, go to next question
+        if (!this.areCandidatesRevealed) {
+            // First click: Reveal candidates
+            this.revealCandidates();
+        } else if (this.isShowingResults) {
+            // Third click: Go to next question
             this.nextQuestion();
         } else {
-            // Show results
+            // Second click: Show final results
             this.showFinalResults();
         }
     }
 
+    revealCandidates() {
+        this.areCandidatesRevealed = true;
+        document.getElementById('resultsSection').classList.remove('hidden');
+        this.updateFinishButton();
+        // Save to Firebase so vote page syncs
+        FirebaseVotes.saveCandidatesRevealed(this.currentQuestionIndex, true);
+    }
+
     updateFinishButton() {
         const finishButton = document.getElementById('finishButton');
-        if (this.isShowingResults) {
+        if (!this.areCandidatesRevealed) {
+            // Initial state: show "Nomeados" button
+            finishButton.innerHTML = '📋 Nomeados';
+            finishButton.classList.add('finish-button');
+            finishButton.classList.remove('continue-mode');
+        } else if (this.isShowingResults) {
             if (this.currentQuestionIndex >= questions.length - 1) {
                 finishButton.innerHTML = '🔄 Recomeçar';
             } else {
@@ -123,7 +142,8 @@ class QuizApp {
         const nextButton = document.getElementById('nextButton');
         
         prevButton.disabled = this.currentQuestionIndex === 0;
-        nextButton.disabled = this.currentQuestionIndex >= questions.length - 1;
+        // Next button always enabled - goes to raffle on last question
+        nextButton.disabled = false;
     }
 
     previousQuestion() {
@@ -137,6 +157,9 @@ class QuizApp {
         if (this.currentQuestionIndex < questions.length - 1) {
             this.currentQuestionIndex++;
             this.changeQuestion();
+        } else {
+            // Last question - go to raffle
+            this.showRaffle();
         }
     }
 
@@ -172,6 +195,15 @@ class QuizApp {
         // Reset local state
         this.currentQuestionIndex = 0;
         this.isShowingResults = false;
+        this.areCandidatesRevealed = false;
+        
+        // Hide raffle if showing and reset it
+        if (this.isShowingRaffle) {
+            this.hideRaffle();
+        }
+        if (this.raffleWheel) {
+            this.raffleWheel.reset();
+        }
         
         // Save clean state to Firebase
         this.saveState();
@@ -199,15 +231,19 @@ class QuizApp {
         
         document.getElementById('qrSection').classList.remove('hidden');
         document.getElementById('winnerSection').classList.add('hidden');
-        document.getElementById('resultsSection').classList.remove('hidden');
+        document.getElementById('resultsSection').classList.add('hidden'); // Hidden until "Nomeados" clicked
         document.getElementById('finalResultsSection').classList.add('hidden');
         
         // Show navigation controls again
         document.querySelector('.navigation-controls').classList.remove('hidden');
         
-        // Reset results state and update button
+        // Reset results state and candidates revealed state
         this.isShowingResults = false;
+        this.areCandidatesRevealed = false;
         this.updateFinishButton();
+        
+        // Save reveal state to Firebase (reset for new question)
+        FirebaseVotes.saveCandidatesRevealed(this.currentQuestionIndex, false);
         
         // Initialize votes for this question in Firebase
         FirebaseVotes.initializeQuestionVotes(question.id, question.options);
@@ -443,11 +479,47 @@ class QuizApp {
         this.currentQuestionIndex++;
         
         if (this.currentQuestionIndex >= questions.length) {
-            this.resetQuiz();
-            this.currentQuestionIndex = 0;
+            // Show raffle instead of resetting
+            this.showRaffle();
+            return;
         }
         
         this.changeQuestion();
+    }
+
+    showRaffle() {
+        this.isShowingRaffle = true;
+        
+        // Hide all quiz sections
+        document.querySelector('.content-layout').classList.add('hidden');
+        document.getElementById('resultsSection').classList.add('hidden');
+        document.getElementById('finalResultsSection').classList.add('hidden');
+        
+        // Show raffle section
+        const raffleSection = document.getElementById('raffleSection');
+        raffleSection.classList.remove('hidden');
+        
+        // Initialize raffle wheel if not already done
+        if (!this.raffleWheel) {
+            this.raffleWheel = new RaffleWheel(raffleSection);
+        } else {
+            this.raffleWheel.show();
+        }
+    }
+
+    hideRaffle() {
+        this.isShowingRaffle = false;
+        
+        // Hide raffle section
+        document.getElementById('raffleSection').classList.add('hidden');
+        
+        // Show quiz sections
+        document.querySelector('.content-layout').classList.remove('hidden');
+        
+        // Reset raffle wheel state
+        if (this.raffleWheel) {
+            this.raffleWheel.reset();
+        }
     }
 }
 

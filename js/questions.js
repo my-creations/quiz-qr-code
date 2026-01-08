@@ -26,7 +26,7 @@ const questions = [
         options: [
             { text: "Carla Costa", image: "images/Carla Costa.jpeg", imagePosition: "center" },
             { text: "Pedro Bernardo", image: "images/Pedro Bernardo.jpeg" },
-            { text: "Jéssica Almeida", image: "images/Jéssica Almeida.jpeg" },
+            { text: "Jéssica Almeida", image: "images/Jéssica Almeida.jpeg", imagePosition: "center 30%" },
             { text: "Sónia Reis", image: "images/Sónia Reis.jpeg", imagePosition: "center" }
         ],
     },
@@ -70,6 +70,7 @@ const questions = [
         options: [
             { text: "Rita Fragoso", image: "images/Rita Fragoso.jpeg" },
             { text: "Ana Machado", image: "images/Ana Machado.jpeg" },
+            { text: "João Maia", image: "images/João Maia.jpeg" },
             { text: "Sónia Pereira", image: "images/Sónia Pereira.jpeg" },
             { text: "Isabel Bonifácio", image: "images/Isabel Bonifácio.jpeg" }
         ],

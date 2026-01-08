@@ -611,6 +611,40 @@ body {
     text-align: center;
 }
 
+/* Waiting message for voters */
+.waiting-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    text-align: center;
+    color: #8b0000;
+}
+
+.waiting-message .waiting-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.waiting-message p {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #333;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.7;
+    }
+}
+
 .vote-options {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
@@ -1183,3 +1217,311 @@ body {
         font-size: 1.5rem;
     }
 }
+
+/* ========================================
+   RAFFLE WHEEL STYLES
+   ======================================== */
+
+.raffle-section {
+    padding: 15px;
+    text-align: center;
+}
+
+.raffle-title h2 {
+    color: #d4af37;
+    font-size: 2.5rem;
+    font-family: 'Broadway', 'Impact', 'Arial Black', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+    letter-spacing: 4px;
+}
+
+.raffle-wheel-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+}
+
+.raffle-wheel-container {
+    position: relative;
+    width: 450px;
+    height: 450px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.raffle-wheel-container canvas {
+    border-radius: 50%;
+    box-shadow: 
+        0 0 30px rgba(212, 175, 55, 0.5),
+        0 0 60px rgba(212, 175, 55, 0.3),
+        inset 0 0 30px rgba(0, 0, 0, 0.3);
+}
+
+.raffle-pointer {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 3rem;
+    color: #d4af37;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+    z-index: 10;
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.5));
+}
+
+.raffle-center-circle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    border: 5px solid #d4af37;
+    box-shadow: 
+        0 0 20px rgba(212, 175, 55, 0.6),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    z-index: 5;
+}
+
+.raffle-center-circle img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.raffle-winner-display {
+    margin-top: 15px;
+    padding: 20px;
+    background: linear-gradient(145deg, #1a1a2e, #16213e);
+    border-radius: 20px;
+    border: 4px solid #d4af37;
+    box-shadow: 
+        0 10px 40px rgba(0, 0, 0, 0.3),
+        0 0 30px rgba(212, 175, 55, 0.4);
+}
+
+.raffle-winner-display.celebrate {
+    animation: winnerCelebrate 0.5s ease-in-out 3;
+}
+
+@keyframes winnerCelebrate {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+.raffle-winner-content h3 {
+    color: #ffd700;
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    font-family: 'Broadway', 'Impact', 'Arial Black', sans-serif;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.raffle-winner-photo {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    border: 5px solid #d4af37;
+    overflow: hidden;
+    box-shadow: 
+        0 0 30px rgba(212, 175, 55, 0.6),
+        0 10px 30px rgba(0, 0, 0, 0.4);
+    animation: winnerPhotoGlow 2s ease-in-out infinite;
+}
+
+@keyframes winnerPhotoGlow {
+    0%, 100% { box-shadow: 0 0 30px rgba(212, 175, 55, 0.6), 0 10px 30px rgba(0, 0, 0, 0.4); }
+    50% { box-shadow: 0 0 50px rgba(212, 175, 55, 0.9), 0 10px 30px rgba(0, 0, 0, 0.4); }
+}
+
+.raffle-winner-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.raffle-winner-name {
+    color: #fff;
+    font-size: 2rem;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    margin-top: 10px;
+}
+
+.raffle-controls {
+    margin-top: 15px;
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.raffle-button {
+    padding: 12px 30px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    background: linear-gradient(145deg, #d4af37, #b8860b);
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 6px 20px rgba(212, 175, 55, 0.4),
+        0 4px 10px rgba(0, 0, 0, 0.3);
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.raffle-button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 
+        0 10px 30px rgba(212, 175, 55, 0.5),
+        0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.raffle-button:active:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.raffle-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.raffle-button.secondary {
+    background: linear-gradient(145deg, #8b0000, #a52a2a);
+}
+
+/* Responsive raffle styles - 720p */
+@media (max-height: 720px) {
+    .raffle-section {
+        padding: 10px;
+    }
+    
+    .raffle-title h2 {
+        font-size: 2rem;
+        margin-bottom: 8px;
+    }
+    
+    .raffle-wheel-wrapper {
+        margin: 5px 0;
+    }
+    
+    .raffle-wheel-container {
+        width: 320px;
+        height: 320px;
+    }
+    
+    .raffle-center-circle {
+        width: 100px;
+        height: 100px;
+        border-width: 4px;
+    }
+    
+    .raffle-pointer {
+        font-size: 2rem;
+        top: -12px;
+    }
+    
+    .raffle-winner-display {
+        margin-top: 10px;
+        padding: 15px;
+    }
+    
+    .raffle-winner-content h3 {
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    
+    .raffle-winner-photo {
+        width: 100px;
+        height: 100px;
+        border-width: 4px;
+        margin-bottom: 10px;
+    }
+    
+    .raffle-winner-name {
+        font-size: 1.5rem;
+    }
+    
+    .raffle-controls {
+        margin-top: 10px;
+        gap: 10px;
+    }
+    
+    .raffle-button {
+        padding: 10px 25px;
+        font-size: 1rem;
+    }
+}
+
+/* Responsive raffle styles - mobile */
+@media (max-width: 768px) {
+    .raffle-title h2 {
+        font-size: 2rem;
+    }
+    
+    .raffle-wheel-container {
+        width: 350px;
+        height: 350px;
+    }
+    
+    .raffle-wheel-container canvas {
+        width: 350px;
+        height: 350px;
+    }
+    
+    .raffle-center-circle {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .raffle-pointer {
+        font-size: 2rem;
+        top: -15px;
+    }
+    
+    .raffle-winner-photo {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .raffle-winner-name {
+        font-size: 1.8rem;
+    }
+    
+    .raffle-button {
+        padding: 12px 30px;
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .raffle-wheel-container {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .raffle-wheel-container canvas {
+        width: 280px;
+        height: 280px;
+    }
+    
+    .raffle-center-circle {
+        width: 60px;
+        height: 60px;
+    }
+}
+

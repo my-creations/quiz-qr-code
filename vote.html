@@ -19,9 +19,14 @@
             <h2 class="question-text" id="voteQuestionText"></h2>
         </div>
 
-        <div id="voteOptionsSection" class="vote-options"></div>
+        <div id="waitingMessage" class="waiting-message">
+            <div class="waiting-icon">⏳</div>
+            <p>Aguarde pela revelação dos nomeados...</p>
+        </div>
 
-        <button class="vote-button" id="submitVoteButton" disabled>
+        <div id="voteOptionsSection" class="vote-options hidden"></div>
+
+        <button class="vote-button hidden" id="submitVoteButton" disabled>
             Confirmar Voto
         </button>
     </div>

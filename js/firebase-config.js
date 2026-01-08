@@ -187,5 +187,40 @@ const FirebaseVotes = {
 
     offQuizStateChange() {
         this.getQuizStateRef().off();
+    },
+
+    // Save candidates revealed state
+    async saveCandidatesRevealed(questionIndex, revealed) {
+        try {
+            await database.ref('candidatesRevealed').set({
+                questionIndex: questionIndex,
+                revealed: revealed
+            });
+        } catch (error) {
+            console.error('Error saving candidates revealed state:', error);
+        }
+    },
+
+    // Get candidates revealed state
+    async getCandidatesRevealed() {
+        try {
+            const snapshot = await database.ref('candidatesRevealed').once('value');
+            return snapshot.val();
+        } catch (error) {
+            console.error('Error getting candidates revealed state:', error);
+            return null;
+        }
+    },
+
+    // Listen for candidates revealed changes
+    onCandidatesRevealedChange(callback) {
+        database.ref('candidatesRevealed').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                callback(data.revealed, data.questionIndex);
+            } else {
+                callback(false, 0);
+            }
+        });
     }
 };
