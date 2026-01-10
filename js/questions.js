@@ -48,7 +48,6 @@ const questions = [
         options: [
             { text: "Mara Lima", image: "images/Mara Lima.jpeg" },
             { text: "Mariana Soares", image: "images/Mariana Soares.jpeg", imagePosition: "center 30%" },
-            { text: "André Veloso", image: "images/André Veloso.jpeg" },
             { text: "Gonçalo Carrilho", image: "images/Gonçalo Carrilho.jpeg", imagePosition: "center 20%" }
         ],
     },
@@ -60,6 +59,7 @@ const questions = [
             { text: "Inês Lima", image: "images/Inês Lima.jpeg" },
             { text: "Luís Correia", image: "images/Luís Correia.jpeg" },
             { text: "Diana Carvalho", image: "images/Diana Carvalho.jpeg" },
+            { text: "Maira Fonseca", image: "images/Maira Fonseca.jpeg" },
             { text: "Cristiana Sabino", image: "images/Cristiana Sabino.jpeg" }
         ],
     },
