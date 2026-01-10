@@ -742,6 +742,34 @@ body {
     animation: slideIn 0.5s ease-out;
 }
 
+/* Smaller cards for final results */
+.results-section .option-item {
+    padding: 8px;
+    min-height: 140px;
+}
+
+.results-section .option-image {
+    width: 90px;
+    height: 90px;
+}
+
+.results-section .option-text {
+    font-size: 1.1rem;
+    margin: 2px 0;
+}
+
+.results-section .option-stats {
+    gap: 1px;
+}
+
+.results-section .option-percentage {
+    font-size: 1.5rem;
+}
+
+.results-section .option-votes {
+    font-size: 0.85rem;
+}
+
 .winner-section {
     text-align: center;
     padding: 15px;
@@ -1048,12 +1076,80 @@ body {
         inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
+/* Windows 125% scaling adjustments (~864px height) */
+@media (max-height: 900px) {
+    .header h1 {
+        font-size: 5rem;
+        letter-spacing: 8px;
+    }
+
+    .award-description .question-text {
+        font-size: 2rem;
+        margin-bottom: 12px;
+    }
+
+    .description-content {
+        font-size: 1.3rem;
+        line-height: 1.6;
+    }
+
+    .qr-section {
+        min-height: 180px;
+        padding: 8px;
+    }
+
+    .right-section {
+        min-height: 250px;
+    }
+
+    .options-section {
+        margin-top: 10px;
+    }
+
+    .option-item {
+        padding: 12px;
+        min-height: 170px;
+    }
+
+    .option-image {
+        width: 120px;
+        height: 120px;
+    }
+
+    .option-text {
+        font-size: 1.3rem;
+    }
+
+    /* Results section for 125% scaling */
+    .results-section .option-item {
+        padding: 6px;
+        min-height: 120px;
+    }
+
+    .results-section .option-image {
+        width: 70px;
+        height: 70px;
+    }
+
+    .results-section .option-text {
+        font-size: 1rem;
+    }
+
+    .results-section .option-percentage {
+        font-size: 1.2rem;
+    }
+
+    .results-section .option-votes {
+        font-size: 0.75rem;
+    }
+}
+
 /* 720p specific adjustments */
 @media (max-height: 720px) {
     .landing-container {
         padding: 8px;
     }
-    
+
     .landing-image img {
         max-height: 80vh;
     }
@@ -1109,18 +1205,18 @@ body {
         font-size: 1.1rem;
         line-height: 1.5;
     }
-    
+
     .qr-section {
         padding: 10px;
-        min-height: 180px;
+        min-height: 150px;
     }
-    
+
     #qrcode {
         padding: 8px;
     }
-    
+
     .right-section {
-        min-height: 280px;
+        min-height: 200px;
     }
     
     .vote-url {
@@ -1216,9 +1312,32 @@ body {
     .option-votes {
         font-size: 0.85rem;
     }
-    
+
     .option-percentage {
         font-size: 1.5rem;
+    }
+
+    /* Results section for 720p */
+    .results-section .option-item {
+        padding: 5px;
+        min-height: 90px;
+    }
+
+    .results-section .option-image {
+        width: 55px;
+        height: 55px;
+    }
+
+    .results-section .option-text {
+        font-size: 0.85rem;
+    }
+
+    .results-section .option-percentage {
+        font-size: 1rem;
+    }
+
+    .results-section .option-votes {
+        font-size: 0.65rem;
     }
 }
 
