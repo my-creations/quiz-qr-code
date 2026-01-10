@@ -301,9 +301,9 @@ body {
 .right-section {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
     position: relative;
-    min-height: 400px;
+    min-height: 300px;
 }
 
 
@@ -383,12 +383,12 @@ body {
 /* QR Code */
 .qr-section {
     text-align: center;
-    padding: 15px;
+    padding: 10px;
     background: linear-gradient(135deg, #fff 0%, #fffdf7 100%);
     border-radius: 10px;
     position: relative;
     overflow: visible;
-    min-height: 320px;
+    min-height: 220px;
 }
 
 .qr-section::after {
@@ -415,7 +415,7 @@ body {
 
 #qrcode {
     display: inline-block;
-    padding: 20px;
+    padding: 12px;
     background: white;
     border-radius: 10px;
     border: 3px solid #d4af37;
@@ -427,18 +427,18 @@ body {
 }
 
 .vote-url {
-    margin-top: 10px;
-    padding: 8px;
+    margin-top: 6px;
+    padding: 5px;
     background: white;
     border-radius: 5px;
     word-break: break-all;
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: #dc2626;
 }
 
 .options-section {
-    margin-top: 30px;
-    margin-bottom: 20px;
+    margin-top: 15px;
+    margin-bottom: 10px;
 }
 
 .option-item {

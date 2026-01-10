@@ -256,14 +256,14 @@ class QuizApp {
     generateQRCode() {
         const qrContainer = document.getElementById('qrcode');
         qrContainer.innerHTML = '';
-        
+
         // Build vote URL properly for GitHub Pages
         const baseUrl = window.location.href.split('/').slice(0, -1).join('/');
         const voteUrl = baseUrl + '/vote.html';
-        
+
         // Adjust QR size based on screen height for 720p compatibility
-        const qrSize = window.innerHeight <= 720 ? 150 : 230;
-        
+        const qrSize = window.innerHeight <= 720 ? 120 : 170;
+
         this.qrCodeInstance = new QRCode(qrContainer, {
             text: voteUrl,
             width: qrSize,
@@ -272,7 +272,7 @@ class QuizApp {
             colorLight: "#ffffff",
             correctLevel: QRCode.CorrectLevel.H
         });
-        
+
         document.getElementById('voteUrl').textContent = voteUrl;
     }
 
