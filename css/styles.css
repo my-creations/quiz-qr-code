@@ -1145,6 +1145,42 @@ body {
         font-size: 0.75rem;
     }
 
+    /* Winner section for 125% scaling */
+    .winner-section {
+        padding: 10px;
+    }
+
+    .winner-announcement {
+        padding: 15px;
+    }
+
+    .winner-announcement h2 {
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+    }
+
+    .winner-announcement::before {
+        font-size: 2.2rem;
+        top: -22px;
+    }
+
+    .winner-image {
+        width: 100px;
+        height: 100px;
+        margin: 10px auto;
+        border-width: 4px;
+    }
+
+    .winner-option {
+        font-size: 1.8rem;
+        margin: 10px 0;
+    }
+
+    .winner-stats {
+        font-size: 1.1rem;
+        margin-top: 10px;
+    }
+
     /* Raffle section for 125% scaling */
     .raffle-section {
         padding: 0 5px 5px 5px;
