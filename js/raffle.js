@@ -58,34 +58,43 @@ class RaffleWheel {
     }
 
     createElements() {
-        // Adjust size for 720p compatibility
-        const canvasSize = window.innerHeight <= 720 ? 320 : 450;
-        
+        // Adjust size for different screen heights to match CSS container sizes
+        let canvasSize;
+        if (window.innerHeight <= 720) {
+            canvasSize = 260;  // 720p
+        } else if (window.innerHeight <= 900) {
+            canvasSize = 320;  // 125% scaling
+        } else {
+            canvasSize = 380;  // default
+        }
+
         this.container.innerHTML = `
             <div class="raffle-title">
                 <h2>🎰 SORTEIO ESPECIAL</h2>
             </div>
-            
-            <div class="raffle-wheel-wrapper">
-                <div class="raffle-wheel-container">
-                    <div class="raffle-pointer">▼</div>
-                    <canvas id="raffleCanvas" width="${canvasSize}" height="${canvasSize}"></canvas>
-                    <div class="raffle-center-circle">
-                        <img id="raffleCenterFace" src="" alt="Participante">
+
+            <div class="raffle-content">
+                <div class="raffle-wheel-wrapper">
+                    <div class="raffle-wheel-container">
+                        <div class="raffle-pointer">▼</div>
+                        <canvas id="raffleCanvas" width="${canvasSize}" height="${canvasSize}"></canvas>
+                        <div class="raffle-center-circle">
+                            <img id="raffleCenterFace" src="" alt="Participante">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="raffle-winner-display hidden" id="raffleWinnerDisplay">
+                    <div class="raffle-winner-content">
+                        <h3>🏆 O Vencedor do Sorteio é</h3>
+                        <div class="raffle-winner-photo">
+                            <img id="raffleWinnerImage" src="" alt="Vencedor">
+                        </div>
+                        <p class="raffle-winner-name" id="raffleWinnerName"></p>
                     </div>
                 </div>
             </div>
-            
-            <div class="raffle-winner-display hidden" id="raffleWinnerDisplay">
-                <div class="raffle-winner-content">
-                    <h3>🏆 O Vencedor do Sorteio é</h3>
-                    <div class="raffle-winner-photo">
-                        <img id="raffleWinnerImage" src="" alt="Vencedor">
-                    </div>
-                    <p class="raffle-winner-name" id="raffleWinnerName"></p>
-                </div>
-            </div>
-            
+
             <div class="raffle-controls">
                 <button class="raffle-button" id="startRaffleButton">
                     🎰 Iniciar Sorteio
