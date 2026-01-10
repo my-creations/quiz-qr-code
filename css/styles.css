@@ -577,6 +577,8 @@ body {
 
 .vote-container {
     max-width: 600px;
+    overflow-y: auto;
+    max-height: 95vh;
 }
 
 .vote-timer {
